@@ -1,0 +1,289 @@
+<header
+  class="sticky top-0 z-40 bg-white/60 border-b shadow-sm border-slate-500/10 px-16 py-8"
+>
+  <div class="flex items-center gap-4 cursor-pointer" routerLink="/admin/teams">
+    <i class="pi pi-arrow-left"></i>
+    <h2 class="text-xl font-bold tracking-tight text-blue-900 dark:text-white">
+      {{ title }}
+    </h2>
+  </div>
+</header>
+
+<main class="py-20 my-4">
+  <div class="max-w-4xl mx-auto">
+    <div class="rounded-xl shadow-xl overflow-hidden">
+      <div class="p-8 bg-white">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Full Name -->
+            <div class="space-y-2">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+              >
+                Full Name <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <i
+                  class="pi pi-id-card absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                ></i>
+                <input
+                  formControlName="name"
+                  class="w-full pl-12 pr-4 py-3 bg-indigo-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+                  [class.ring-2]="isInvalid('name')"
+                  [class.ring-red-400]="isInvalid('name')"
+                  placeholder="e.g. Marcus Thorne"
+                  type="text"
+                />
+              </div>
+              <p
+                *ngIf="isInvalid('name')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Name is required
+              </p>
+            </div>
+
+            <!-- Qualifications -->
+            <div class="space-y-2">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+              >
+                Qualifications <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <i
+                  class="pi pi-graduation-cap absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                ></i>
+                <input
+                  formControlName="qualifications"
+                  class="w-full pl-12 pr-4 py-3 bg-blue-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+                  [class.ring-2]="isInvalid('qualifications')"
+                  [class.ring-red-400]="isInvalid('qualifications')"
+                  placeholder="M.Sc. in Geo-Technical Engineering"
+                  type="text"
+                />
+              </div>
+              <p
+                *ngIf="isInvalid('qualifications')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Qualifications is required
+              </p>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="space-y-2">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+                >Phone Number</label
+              >
+              <div class="relative">
+                <i
+                  class="pi pi-phone absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                ></i>
+                <input
+                  formControlName="phone"
+                  class="w-full pl-12 pr-4 py-3 bg-blue-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+                  placeholder="+1 (555) 000-0000"
+                  type="tel"
+                />
+              </div>
+            </div>
+
+            <!-- Association -->
+            <div class="space-y-2">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+              >
+                Association <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <i
+                  class="pi pi-verified absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                ></i>
+                <select
+                  formControlName="association"
+                  class="w-full pl-12 pr-4 py-3 bg-blue-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium appearance-none"
+                  [class.ring-2]="isInvalid('association')"
+                  [class.ring-red-400]="isInvalid('association')"
+                >
+                  <option value="">Select Association</option>
+                  <option value="FT">FT</option>
+                  <option value="F/T/P">F/T/P</option>
+                </select>
+                <i
+                  class="pi pi-angle-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                ></i>
+              </div>
+              <p
+                *ngIf="isInvalid('association')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Association is required
+              </p>
+            </div>
+
+            <!-- Years of Experience -->
+            <div class="space-y-2">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+              >
+                Years of Experience <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <i
+                  class="pi pi-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                ></i>
+                <input
+                  formControlName="yearOfExperience"
+                  class="w-full pl-12 pr-4 py-3 bg-blue-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+                  [class.ring-2]="isInvalid('yearsOfExperience')"
+                  [class.ring-red-400]="isInvalid('yearsOfExperience')"
+                  placeholder="12"
+                  type="number"
+                  min="1"
+                />
+              </div>
+              <p
+                *ngIf="isInvalid('yearsOfExperience')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Must be a positive number
+              </p>
+            </div>
+
+            <!-- Design -->
+            <div class="space-y-2">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+              >
+                Design <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <i
+                  class="pi pi-sitemap absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                ></i>
+                <input
+                  formControlName="design"
+                  class="w-full pl-12 pr-4 py-3 bg-blue-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+                  [class.ring-2]="isInvalid('design')"
+                  [class.ring-red-400]="isInvalid('design')"
+                  placeholder="Managing Direction / Geo-Technical Engineer"
+                  type="text"
+                />
+              </div>
+              <p
+                *ngIf="isInvalid('design')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Design is required
+              </p>
+            </div>
+
+            <!-- Bio & Image Upload -->
+            <div class="col-span-2">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Bio -->
+                <div class="space-y-2">
+                  <label
+                    class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+                    >Bio</label
+                  >
+                  <textarea
+                    formControlName="bio"
+                    class="w-full px-4 py-3 bg-blue-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400 resize-none"
+                    rows="5"
+                    placeholder="Write a short bio..."
+                  ></textarea>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="space-y-2">
+                  <label
+                    class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+                    >Profile Image</label
+                  >
+                  <div
+                    class="relative h-[calc(100%-28px)] min-h-32 bg-blue-500/5 rounded-lg border-2 border-dashed border-indigo-900/20 hover:border-indigo-900 transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer"
+                    (click)="avatarInput.click()"
+                  >
+                    <ng-container *ngIf="previewUrl; else uploadPlaceholder">
+                      <img
+                        [src]="previewUrl"
+                        alt="Preview"
+                        class="w-full h-full object-cover rounded-lg absolute inset-0"
+                      />
+                      <button
+                        type="button"
+                        (click)="$event.stopPropagation(); clearImage()"
+                        class="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors z-10"
+                      >
+                        <i class="pi pi-times text-xs"></i>
+                      </button>
+                    </ng-container>
+
+                    <ng-template #uploadPlaceholder>
+                      <i class="pi pi-image text-3xl text-indigo-900/20"></i>
+                      <p class="text-xs font-bold text-slate-400">
+                        Click to upload image
+                      </p>
+                      <p class="text-[10px] text-slate-300">
+                        JPG, PNG or GIF. Max 2MB
+                      </p>
+                    </ng-template>
+
+                    <input
+                      #avatarInput
+                      accept="image/*"
+                      class="hidden"
+                      type="file"
+                      (change)="onImageSelected($event)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Banner -->
+          <div
+            *ngIf="error"
+            class="flex items-center gap-3 px-4 py-3 bg-red-50 rounded-lg border border-red-100"
+          >
+            <i class="pi pi-exclamation-triangle text-red-500"></i>
+            <p class="text-xs font-medium text-red-600">{{ error }}</p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div
+            class="pt-10 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-100"
+          >
+            <button
+              routerLink="/admin/teams"
+              class="w-full cursor-pointer sm:w-auto px-8 py-3 rounded-lg font-bold text-slate-600 hover:bg-slate-100 transition-all active:scale-95 duration-200"
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              [disabled]="submitting"
+              class="w-full cursor-pointer sm:w-auto px-10 py-3 bg-indigo-900 text-white rounded-lg font-bold shadow-lg shadow-indigo-900/20 hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95 duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
+              type="submit"
+            >
+              <ng-container *ngIf="submitting; else btnLabel">
+                <div
+                  class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+                ></div>
+                {{ submitLabel }}ing...
+              </ng-container>
+              <ng-template #btnLabel>
+                <i class="pi pi-save text-sm"></i>
+                {{ submitLabel }}
+              </ng-template>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>

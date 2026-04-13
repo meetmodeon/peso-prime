@@ -1,0 +1,78 @@
+<section class="py-24 bg-white dark:bg-background-dark">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <h2 class="font-heading text-4xl font-bold text-slate-900 dark:text-white mb-4">
+        Meet Our Experts
+      </h2>
+      <div class="h-1.5 w-24 bg-green-600 rounded-full mx-auto mb-6"></div>
+      <p class="text-slate-500 max-w-2xl mx-auto">
+        Led by veteran engineers with decades of experience in Himalayan geotechnical challenges.
+      </p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div *ngFor="let i of [1,2,3,4]" class="text-center animate-pulse">
+        <div class="rounded-2xl aspect-square mb-6 bg-slate-200 dark:bg-slate-700"></div>
+        <div class="h-5 w-36 bg-slate-200 dark:bg-slate-700 rounded mx-auto mb-2"></div>
+        <div class="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded mx-auto mb-2"></div>
+        <div class="h-3 w-32 bg-slate-100 dark:bg-slate-800 rounded mx-auto"></div>
+      </div>
+    </div>
+
+    <!-- Team Grid -->
+    <div *ngIf="!loading &&  members && members.length > 0"
+         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <div *ngFor="let member of members" class="group text-center">
+
+        <!-- Avatar -->
+        <div class="relative overflow-hidden rounded-2xl aspect-square mb-6 bg-slate-100">
+
+          <ng-container *ngIf="member.imageId; else initialsCard">
+            <img
+              [secureImage]="member.imageId"
+              [alt]="member.name"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          </ng-container>
+
+          <!-- No image fallback -->
+          <ng-template #initialsCard>
+            <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+              <span class="text-4xl font-extrabold text-indigo-900/30 tracking-tight">
+                {{ getInitials(member.name) }}
+              </span>
+            </div>
+          </ng-template>
+
+        </div>
+
+        <!-- Info -->
+        <h3 class="text-xl font-heading font-bold text-slate-900 dark:text-white">
+          {{ member.name }}
+        </h3>
+
+        <p class="text-green-600 font-bold text-xs uppercase tracking-wider mb-2">
+          {{ member.design }}
+        </p>
+
+        <p class="text-slate-500 text-sm">
+          {{ member.yearOfExperience }}+ years experience
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && (!members || members.length === 0)"
+         class="text-center py-16 text-slate-400">
+
+      <i class="pi pi-users text-4xl mb-3 block"></i>
+      <p class="text-sm font-medium">No team members found.</p>
+    </div>
+
+  </div>
+</section>

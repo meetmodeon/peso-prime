@@ -1,0 +1,262 @@
+<!-- users.component.html -->
+<div class="px-10 pb-12 pt-8">
+  <!-- Header -->
+  <div class="flex items-end justify-between mb-10">
+    <div>
+      <span
+        class="text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-900 mb-2 block"
+      >
+        User Management
+      </span>
+      <h1 class="text-4xl font-extrabold tracking-tight text-on-background">
+        All Users
+      </h1>
+    </div>
+    <button
+      routerLink="/admin/users/add"
+      class="flex items-center gap-2 bg-indigo-900 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95"
+    >
+      <i class="pi pi-plus text-sm"></i>
+      Add New User
+    </button>
+  </div>
+
+  <!-- Table Card -->
+  <div
+    class="bg-white/80 rounded-xl shadow-xl overflow-hidden border border-white"
+  >
+    <!-- Filter Bar -->
+    <div
+      class="px-8 py-5 flex items-center justify-between bg-slate-50 border-b border-slate-100"
+    >
+      <div class="flex items-center gap-4">
+        <!-- filters go here -->
+      </div>
+      <div
+        class="text-[10px] font-bold uppercase tracking-widest text-slate-400"
+      >
+        Displaying {{ users().length }} of {{ totalPages }} Results
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading()" class="flex justify-center items-center py-20">
+      <i class="pi pi-spin pi-spinner text-indigo-900 text-2xl"></i>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      *ngIf="!loading() && users().length === 0"
+      class="flex flex-col items-center justify-center py-20 text-slate-400"
+    >
+      <i class="pi pi-users text-4xl mb-3"></i>
+      <p class="text-sm font-medium">No users found</p>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!loading() && users().length > 0" class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50">
+            <th
+              class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500"
+            >
+              Name / ID
+            </th>
+            <th
+              class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500"
+            >
+              Role
+            </th>
+            <th
+              class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500"
+            >
+              Password
+            </th>
+            <th
+              class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500"
+            >
+              Contact Email
+            </th>
+            <th
+              class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500"
+            >
+              Phone No
+            </th>
+            <th
+              class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 text-right"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr
+            *ngFor="let user of users()"
+            class="hover:bg-slate-50/50 transition-colors"
+          >
+            <!-- Name / ID -->
+            <td class="px-8 py-5">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-indigo-900/20 flex items-center justify-center font-bold text-indigo-900 text-sm"
+                >
+                  {{ getInitials(user.name) }}
+                </div>
+                <div>
+                  <p class="font-bold text-slate-800 text-sm">
+                    {{ user.name }}
+                  </p>
+                  <p class="text-[10px] text-slate-400 tracking-tighter">
+                    ID: {{ user.username }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Role -->
+            <td class="px-6 py-5">
+              <span
+                [class]="
+                  'text-xs font-medium px-2 py-1 rounded ' +
+                  getRoleBadgeClass(user.userRole)
+                "
+              >
+                {{ user.userRole }}
+              </span>
+            </td>
+
+            <!-- Password (masked) -->
+            <td class="px-6 py-5">
+              <div class="flex items-center gap-2">
+                <p class="text-xs text-slate-500 font-mono tracking-widest">
+                  {{
+                    visiblePasswords[user.username] ? user.password : "••••••••"
+                  }}
+                </p>
+                <button
+                  (click)="togglePassword(user.username)"
+                  class="text-slate-400 hover:text-indigo-900 transition-colors"
+                >
+                  <i
+                    [class]="
+                      visiblePasswords[user.username]
+                        ? 'pi pi-eye-slash'
+                        : 'pi pi-eye'
+                    "
+                    class="text-sm"
+                  >
+                  </i>
+                </button>
+              </div>
+            </td>
+
+            <!-- Email -->
+            <td class="px-6 py-5">
+              <p
+                class="text-xs text-blue-900 font-medium underline decoration-blue-900/20"
+              >
+                {{ user.email || "-" }}
+              </p>
+            </td>
+
+            <!-- Phone -->
+            <td class="px-6 py-5">
+              <p class="text-xs text-slate-700 font-medium">
+                {{ user.phone || "-" }}
+              </p>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-8 py-5 text-right">
+              <div class="flex items-center justify-end gap-1">
+                <!-- View -->
+                <button
+                  [routerLink]="['/admin/users/view', user.username]"
+                  title="View"
+                  class="group flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200"
+                >
+                  <i class="pi pi-eye text-sm"></i>
+                  <span class="hidden sm:inline text-xs font-semibold"
+                    >View</span
+                  >
+                </button>
+
+                <!-- Divider -->
+                <span class="w-px h-5 bg-slate-200"></span>
+
+                <!-- Edit -->
+                <button
+                  [routerLink]="['/admin/users/edit', user.username]"
+                  title="Edit"
+                  class="group flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition-all duration-200"
+                >
+                  <i class="pi pi-pen-to-square text-sm"></i>
+                  <span class="hidden sm:inline text-xs font-semibold"
+                    >Edit</span
+                  >
+                </button>
+
+                <!-- Divider -->
+                <span class="w-px h-5 bg-slate-200"></span>
+
+                <!-- Delete -->
+                <button
+                  (click)="deleteUser(user.username)"
+                  title="Delete"
+                  class="group flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+                >
+                  <i class="pi pi-trash text-sm"></i>
+                  <span class="hidden sm:inline text-xs font-semibold"
+                    >Delete</span
+                  >
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!--  paginator block at the bottom with this -->
+       <div
+      *ngIf="!loading() && totalPages > 0"
+      class="px-8 py-5 border-t border-slate-100 bg-slate-50 flex items-center justify-between"
+    >
+      <button
+        (click)="goToPage(currentPage() - 1)"
+        [disabled]="isFirstPage()"
+        class="flex items-center gap-2 text-xs font-bold transition-colors"
+        [ngClass]="isFirstPage() ? 'text-slate-300 cursor-not-allowed' : 'text-slate-500 hover:text-indigo-900 cursor-pointer'"
+      >
+        <i class="pi pi-chevron-left text-sm"></i>
+        Previous
+      </button>
+ 
+      <div class="flex items-center gap-2">
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <span *ngIf="page === -1" class="text-slate-400 px-1">...</span>
+          <button
+            *ngIf="page !== -1"
+            (click)="goToPage(page)"
+            class="w-8 h-8 rounded text-xs font-bold transition-colors"
+            [ngClass]="page === currentPage() ? 'bg-indigo-900 text-white' : 'hover:bg-slate-200 text-gray-700 cursor-pointer'"
+          >
+            {{ page + 1 }}
+          </button>
+        </ng-container>
+      </div>
+ 
+      <button
+        (click)="goToPage(currentPage() + 1)"
+        [disabled]="isLastPage()"
+        class="flex items-center gap-2 text-xs font-bold transition-colors"
+        [ngClass]="isLastPage() ? 'text-slate-300 cursor-not-allowed' : 'text-gray-700 hover:text-indigo-900 cursor-pointer'"
+      >
+        Next
+        <i class="pi pi-chevron-right text-sm"></i>
+      </button>
+    </div>
+    
+  </div>
+</div>

@@ -1,0 +1,147 @@
+<section class="relative bg-white h-full py-6">
+  <div class="header-section flex justify-between pt-4 pl-4">
+    <div class="title max-w-7xl font-bold text-xl md:text-3xl">
+      {{ project.title }}
+    </div>
+    <div class="pb-10 px-8 z-10 top-1 sticky">
+      <button
+        type="button"
+        (click)="closeForm()"
+        class="close-form text-red-500 float-right cursor-pointer bg-gray-800/10 size-8 rounded-full"
+      >
+        <i class="fa-regular fa-circle-xmark"></i>
+      </button>
+    </div>
+  </div>
+  <div class="max-w-full h-[0.2px] bg-gray-500/20"></div>
+  <div
+    class="main-content grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-8 lg:gap-12 py-4 px-8"
+  >
+    <div class="left-side">
+      <div class="images border-2 border-gray-200 rounded-md">
+        <!-- ✅ IF IMAGES EXIST -->
+        <ng-container *ngIf="images.length > 0; else noImage">
+          <p-galleria
+            [value]="images"
+            [autoPlay]="true"
+            [showItemNavigators]="true"
+            [responsiveOptions]="responsiveOptions"
+            [circular]="true"
+            [numVisible]="5"
+            [containerStyle]="{ 'max-width': '100%', border: 'none' }"
+          >
+            <ng-template #item let-item>
+              <img
+                [secureImage]="item"
+                class="w-full h-[35vh] rounded-t-md mb-4"
+              />
+            </ng-template>
+
+            <ng-template #thumbnail let-item>
+              <img [secureImage]="item" style="display: block" />
+            </ng-template>
+          </p-galleria>
+        </ng-container>
+
+        <!-- ❌ IF NO IMAGES → SHOW ICON -->
+        <ng-template #noImage>
+          <div
+            class="w-full h-[35vh] flex flex-col items-center justify-center text-gray-400 bg-gray-100 rounded-md"
+          >
+            <!--image icon -->
+            <i class="pi pi-image text-5xl mb-2"></i>
+
+            <span class="text-sm font-medium">No Image Available</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <div class="right-side flex flex-col gap-4">
+      <div class="tags">
+        <span
+          class="rounded-2xl bg-indigo-500/10 text-indigo-600 font-semibold px-2 py-1"
+        >
+          {{ project.categoryTags || 'Tags' }}
+        </span>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <span class="icons text-blue-500">
+          <i class="pi pi-building"></i>
+        </span>
+        <div class="details flex flex-col gap-2">
+          <span class="text-gray-500 uppercase"> Client </span>
+          <span class="font-bold">
+            {{ project.clientName }}
+          </span>
+        </div>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <div class="icons text-blue-500">
+          <i class="pi pi-map-marker"></i>
+        </div>
+        <div class="location flex flex-col gap-2">
+          <span class="text-gray-500 uppercase"> Location</span>
+          <span class="font-bold">
+            {{ project.location }}
+          </span>
+        </div>
+      </div>
+      <div class="flex items-baseline gap-2">
+        <div class="icons text-blue-500">
+          <i class="pi pi-calendar"></i>
+        </div>
+        <div class="location flex flex-col gap-2">
+          <span class="text-gray-500 uppercase"> Year</span>
+          <span class="font-bold">
+            {{ getYear(project.createdAt) }}
+          </span>
+        </div>
+      </div>
+      <div class="w-full h-[0.2px] bg-gray-500/20"></div>
+
+      <div class="scope flex flex-col gap-3">
+        <div class="title font-bold">Scope of Work</div>
+        <div class="list-of-scope max-h-3/5 overflow-y-auto">
+          <ul class="flex flex-col gap-2">
+            <li
+              class="flex gap-2 items-center"
+              *ngFor="let scope of project.scopeOfWork"
+            >
+              <div class="icons text-blue-400">
+                <i class="pi pi-check-circle"></i>
+              </div>
+              <div class="details">
+                {{ scope }}
+              </div>
+            </li>
+            <li class="flex gap-2 items-center">
+              <div class="icons text-blue-400">
+                <i class="pi pi-check-circle"></i>
+              </div>
+              <div class="details">Material Testing at Laboratory</div>
+            </li>
+            <li class="flex gap-2 items-center">
+              <div class="icons text-blue-400">
+                <i class="pi pi-check-circle"></i>
+              </div>
+              <div class="details">Material Testing at Laboratory</div>
+            </li>
+            <li class="flex gap-2 items-center">
+              <div class="icons text-blue-400">
+                <i class="pi pi-check-circle"></i>
+              </div>
+              <div class="details">50 nos PDA (Pile Driving Analyzer)</div>
+            </li>
+            <li class="flex gap-2 items-center">
+              <div class="icons text-blue-400">
+                <i class="pi pi-check-circle"></i>
+              </div>
+              <div class="details">Material Testing at Laboratory</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div></div>
+    </div>
+  </div>
+</section>

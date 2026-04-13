@@ -1,0 +1,95 @@
+<header class="fixed top-0 right-0 w-[calc(100%-64px)] lg:w-[calc(100%-288px)]
+               z-40 bg-white backdrop-blur-md h-20 flex items-center px-8 gap-4">
+  <button routerLink="/admin/users"
+          class="w-8 h-8 flex items-center justify-center rounded-lg
+                 hover:bg-slate-100 text-slate-500 transition-colors">
+    <i class="pi pi-arrow-left"></i>
+  </button>
+  <h2 class="text-xl font-bold tracking-tight text-indigo-900">User Details</h2>
+
+  <!-- Edit Button -->
+  <div class="ml-auto">
+    <button [routerLink]="['/admin/users/edit', user?.username]"
+            class="flex items-center gap-2 px-4 py-2 bg-indigo-900 text-white
+                   rounded-lg font-bold hover:bg-indigo-800 transition-all active:scale-95">
+      <i class="pi pi-pencil text-sm"></i>
+      Edit
+    </button>
+  </div>
+</header>
+
+<main class="pt-24 px-6">
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
+
+    <!-- Profile Header -->
+    <div class="flex flex-col md:flex-row items-center gap-6 p-8 border-b border-slate-100">
+      <div class="w-20 h-20 rounded-full bg-indigo-500/10 border-2 border-indigo-900/20
+                  flex items-center justify-center overflow-hidden">
+        <!-- <img *ngIf="user?.profileImageUrl" [src]="user?.profileImageUrl"
+             class="w-full h-full object-cover" alt="Profile" /> -->
+        <i  class="pi pi-user text-4xl text-indigo-900/30"></i>
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold text-indigo-900">{{ user?.name }}</h3>
+        <!-- <p class="text-slate-500 text-sm mt-1">{{ user?.design }}</p>
+        <span class="inline-block mt-2 px-3 py-1 bg-indigo-500/10 text-indigo-900
+                     text-xs font-bold rounded-full">
+          {{ user?.association }}
+        </span> -->
+      </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-8">
+
+      <!-- Qualifications -->
+      <div class="space-y-1">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">
+          Email
+        </p>
+        <div class="flex items-center gap-3">
+          <i class="pi pi-id-card text-indigo-900/50"></i>
+          <p class="font-medium text-slate-700">{{ user?.email || '-------' }}</p>
+        </div>
+      </div>
+
+      <!-- Phone -->
+      <div class="space-y-1">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">
+          Phone Number
+        </p>
+        <div class="flex items-center gap-3">
+          <i class="pi pi-phone text-indigo-900/50"></i>
+          <p class="font-medium text-slate-700">{{ user?.phone || '—' }}</p>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="space-y-1">
+  <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">
+    Password
+  </p>
+  <div class="flex items-center gap-3">
+    <i class="pi pi-lock text-indigo-900/50"></i>
+    <p class="font-medium text-slate-700 tracking-widest">
+      {{ showPassword ? user?.password : '••••••••' }}
+    </p>
+    <button (click)="showPassword = !showPassword"
+            class="ml-auto w-8 h-8 flex items-center justify-center
+                   rounded-lg hover:bg-slate-100 text-slate-400
+                   hover:text-indigo-900 transition-colors">
+      <i [class]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+    </button>
+  </div>
+</div>
+
+      
+
+      
+
+    
+
+    </div>
+
+  </div>
+</main>

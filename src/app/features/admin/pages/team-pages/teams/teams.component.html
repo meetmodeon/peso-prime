@@ -1,0 +1,207 @@
+<div class="px-10 pb-12 pt-8">
+ 
+  <!-- Page Header -->
+  <div class="flex items-end justify-between mb-10">
+    <div>
+      <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-900 mb-2 block">
+        Personnel Management
+      </span>
+      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Teams Member</h1>
+      <!-- <p class="text-gray-500 mt-2 max-w-xl">
+        Configure access levels and manage the engineering personnel directory for Alpine Tectonic operations.
+      </p> -->
+    </div>
+    <button
+      routerLink="/admin/teams/add"
+      class="flex items-center gap-1 bg-indigo-900 text-white px-3 py-2 rounded-lg font-bold shadow-lg shadow-indigo-900/20 hover:bg-indigo-800 hover:shadow-xl transition-all active:scale-95 cursor-pointer"
+    >
+      <i class="pi pi-plus text-sm"></i>
+      Add New Member
+    </button>
+  </div>
+ 
+  <!-- Table Section -->
+  <div class="bg-white/80 rounded-xl shadow-xl shadow-slate-200/50 overflow-hidden border border-white">
+ 
+    <!-- Filter Bar -->
+    <div class="px-8 py-5 flex items-center justify-between bg-slate-50 border-b border-slate-100">
+      <div class="flex  rounded-lg p-1 ">
+        <button class="px-4 py-1.5 text-xs font-bold rounded-md bg-indigo-900 text-white">All Team Member</button>
+        
+      </div>
+      <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <ng-container *ngIf="!loading">
+          Displaying {{ startItem }}-{{ endItem }} of {{ state.totalElements() }} Results
+        </ng-container>
+        <ng-container *ngIf="loading">Loading...</ng-container>
+      </div>
+    </div>
+ 
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-20">
+      <div class="w-8 h-8 border-4 border-indigo-900 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+ 
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="flex flex-col items-center justify-center py-20 text-center">
+      <i class="pi pi-exclamation-triangle text-4xl text-red-400 mb-3"></i>
+      <p class="text-gray-500 text-sm">{{ error }}</p>
+      <button (click)="loadMembers()" class="mt-4 px-4 py-2 bg-indigo-900 text-white text-xs font-bold rounded-lg">
+        Retry
+      </button>
+    </div>
+ 
+    <!-- Table Content -->
+    <div class="overflow-x-auto" *ngIf="!loading && !error">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50">
+            <th class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Name / Profile</th>
+            <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Role</th>
+            <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Qualifications</th>
+            <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Phone</th>
+            <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Experience</th>
+            <th class="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+ 
+          <tr *ngFor="let member of state.teamMembers()" class="hover:bg-slate-50/50 transition-colors">
+ 
+            <!-- ✅ Name / Profile with image -->
+            <td class="px-8 py-5">
+              <div class="flex items-center gap-3">
+ 
+                <!-- Has imageId → load via directive -->
+                <ng-container *ngIf="member.imageId; else initialsBlock">
+                  <div class="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 shrink-0">
+                    <img
+                      [secureImage]="member.imageId"
+                      [alt]="member.name"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                </ng-container>
+ 
+                <!-- No imageId → show initials -->
+                <ng-template #initialsBlock>
+                  <div class="w-10 h-10 rounded-lg bg-indigo-900/20 flex items-center justify-center font-bold text-indigo-900 text-sm shrink-0">
+                    {{ getInitials(member.name) }}
+                  </div>
+                </ng-template>
+ 
+                <div>
+                  <p class="font-bold text-gray-900 text-sm">{{ member.name }}</p>
+                  <p class="text-[10px] text-slate-400 uppercase tracking-tighter">ID: AT-{{ member.id }}</p>
+                </div>
+              </div>
+            </td>
+ 
+            <!-- Role -->
+            <td class="px-6 py-5">
+              <span class="text-xs font-medium text-gray-700 bg-slate-100 px-2 py-1 rounded">
+                {{ member.design }}
+              </span>
+            </td>
+ 
+            <!-- Qualifications -->
+            <td class="px-6 py-5 max-w-50">
+              <p class="text-xs text-gray-500 font-medium truncate" [title]="member.qualifications">
+                {{ member.qualifications }}
+              </p>
+            </td>
+ 
+            <!-- Phone -->
+            <td class="px-6 py-5">
+              <p class="text-xs text-gray-700 font-medium">{{ member.phone || '—' }}</p>
+            </td>
+ 
+            <!-- Experience -->
+            <td class="px-6 py-5">
+              <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold uppercase">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                {{ member.yearOfExperience }} yrs
+              </span>
+            </td>
+ 
+            <!-- Actions -->
+            <td class="px-8 py-5 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button
+                  [routerLink]="['/admin/teams/view', member.id]"
+                  class="p-2 text-slate-400 hover:text-indigo-900 hover:bg-indigo-50 rounded-lg transition-colors"
+                  title="Edit"
+                >
+                  <i class="pi pi-eye text-sm"></i>
+                </button>
+                <button
+                  [routerLink]="['/admin/teams/edit', member.id]"
+                  class="p-2 text-slate-400 hover:text-indigo-900 hover:bg-indigo-50 rounded-lg transition-colors"
+                  title="Edit"
+                >
+                  <i class="pi pi-pencil text-sm"></i>
+                </button>
+                <button
+                  (click)="deleteMember(member.id)"
+                  class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Delete"
+                >
+                  <i class="pi pi-trash text-sm"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+ 
+          <!-- Empty State -->
+          <tr *ngIf="state.teamMembers().length === 0">
+            <td colspan="6" class="px-8 py-20 text-center text-gray-400 text-sm">
+              No team members found.
+            </td>
+          </tr>
+ 
+        </tbody>
+      </table>
+    </div>
+ 
+    <!-- Pagination -->
+    <div
+      *ngIf="!loading && totalPages > 0"
+      class="px-8 py-5 border-t border-slate-100 bg-slate-50 flex items-center justify-between"
+    >
+      <button
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="isFirstPage"
+        class="flex items-center gap-2 text-xs font-bold transition-colors"
+        [ngClass]="isFirstPage ? 'text-slate-300 cursor-not-allowed' : 'text-slate-500 hover:text-indigo-900'"
+      >
+        <i class="pi pi-chevron-left text-sm"></i>
+        Previous
+      </button>
+ 
+      <div class="flex items-center gap-2">
+        <ng-container *ngFor="let page of getVisiblePages()">
+          <span *ngIf="page === -1" class="text-slate-400 px-1">...</span>
+          <button
+            *ngIf="page !== -1"
+            (click)="goToPage(page)"
+            class="w-8 h-8 rounded text-xs font-bold transition-colors"
+            [ngClass]="page === currentPage ? 'bg-indigo-900 text-white' : 'hover:bg-slate-200 text-gray-700'"
+          >
+            {{ page + 1 }}
+          </button>
+        </ng-container>
+      </div>
+ 
+      <button
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="isLastPage"
+        class="flex items-center gap-2 text-xs font-bold transition-colors"
+        [ngClass]="isLastPage ? 'text-slate-300 cursor-not-allowed' : 'text-gray-700 hover:text-indigo-900'"
+      >
+        Next
+        <i class="pi pi-chevron-right text-sm"></i>
+      </button>
+    </div>
+ 
+  </div>
+</div>

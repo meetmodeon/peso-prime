@@ -1,0 +1,244 @@
+<!-- Loading -->
+<div *ngIf="loading" class="flex items-center justify-center min-h-screen">
+  <div class="flex flex-col items-center gap-4">
+    <div class="w-10 h-10 border-2 border-indigo-900/20 border-t-indigo-900 rounded-full animate-spin"></div>
+    <p class="text-sm text-slate-400 font-medium">Loading query…</p>
+  </div>
+</div>
+
+<!-- Error -->
+<div *ngIf="error && !loading" class="flex items-center justify-center min-h-screen px-6">
+  <div class="flex flex-col items-center gap-4 text-center max-w-sm">
+    <div class="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center">
+      <i class="pi pi-exclamation-triangle text-2xl text-red-400"></i>
+    </div>
+    <p class="text-sm font-semibold text-slate-600">{{ error }}</p>
+    <button routerLink="/admin/contacts"
+      class="flex items-center gap-2 px-4 py-2 bg-indigo-900 text-white text-xs font-bold rounded-lg">
+      <i class="pi pi-arrow-left text-xs"></i> Back to Queries
+    </button>
+  </div>
+</div>
+
+<!-- Main -->
+<ng-container *ngIf="!loading && !error && query">
+
+  <!-- ── Sticky Header ──────────────────────────────────────── -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-indigo-900/10
+                 h-16 flex items-center justify-between px-8">
+    <div class="flex items-center gap-3">
+      <button routerLink="/admin/contacts"
+        class="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200
+               text-slate-500 hover:bg-slate-50 transition-all">
+        <i class="pi pi-arrow-left text-xs"></i>
+      </button>
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-900">Contact Queries</p>
+        <h1 class="text-base font-extrabold text-slate-900 leading-tight truncate max-w-xs">
+          Query from {{ query.fullName }}
+        </h1>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Status badge in header -->
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border"
+        [ngClass]="statusClass(query.status)">
+        <span class="w-1.5 h-1.5 rounded-full" [ngClass]="statusDot(query.status)"></span>
+        {{ query.status }}
+      </span>
+
+      <!-- Reply button -->
+      <button *ngIf="query.status !== 'REPLIED'"
+        [routerLink]="['/admin/contacts', query.id, 'reply']"
+        class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-900 text-white
+               text-sm font-bold hover:bg-indigo-800 transition-all active:scale-95">
+        <i class="pi pi-reply text-xs"></i> Reply
+      </button>
+
+      <!-- Delete -->
+      <button (click)="confirmDelete()" [disabled]="deleting"
+        class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-red-200
+               text-red-500 text-sm font-bold hover:bg-red-50 transition-all active:scale-95
+               disabled:opacity-50 disabled:cursor-not-allowed">
+        <i class="text-xs" [class]="deleting ? 'pi pi-spin pi-spinner' : 'pi pi-trash'"></i>
+        {{ deleting ? 'Deleting…' : 'Delete' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Page Body ─────────────────────────────────────────── -->
+  <div class="max-w-5xl mx-auto px-8 py-8">
+    <div class="grid grid-cols-12 gap-8">
+
+      <!-- LEFT — Message content -->
+      <div class="col-span-12 lg:col-span-8 space-y-6">
+
+        <!-- Message card -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-5">
+          <div class="flex items-center gap-2.5 border-b border-slate-50 pb-4">
+            <div class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0">
+              <i class="pi pi-envelope text-indigo-900 text-sm"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-base font-extrabold text-slate-900 truncate">{{ query.subject }}</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">Received {{ formatDate(query.createdAt) }}</p>
+            </div>
+          </div>
+
+          <!-- Message body -->
+          <div class="bg-slate-50 rounded-xl p-5">
+            <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{{ query.message }}</p>
+          </div>
+        </div>
+
+        <!-- Admin reply (if replied) -->
+        <div *ngIf="query.status === 'REPLIED' && query.adminReply"
+          class="bg-white rounded-2xl border border-emerald-100 shadow-sm p-6 space-y-4">
+          <div class="flex items-center gap-2.5 border-b border-emerald-50 pb-4">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+              <i class="pi pi-check-circle text-emerald-600 text-sm"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Admin Reply Sent</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5">
+                Replied on {{ formatDate(query.createdAt) }}
+              </p>
+            </div>
+            <!-- Edit reply -->
+            <button [routerLink]="['/admin/contacts', query.id, 'reply']"
+              class="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-lg border
+                     border-emerald-200 text-emerald-700 text-xs font-bold
+                     hover:bg-emerald-50 transition-colors">
+              <i class="pi pi-pencil text-[10px]"></i> Edit Reply
+            </button>
+          </div>
+          <div class="bg-emerald-50/60 rounded-xl p-5 border border-emerald-100">
+            <p class="text-sm text-emerald-800 leading-relaxed whitespace-pre-wrap">
+              {{ query.adminReply }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Reply CTA (if not yet replied) -->
+        <div *ngIf="query.status !== 'REPLIED'"
+          class="bg-linear-to-br from-indigo-900 to-indigo-950 rounded-2xl p-6 text-white
+                 flex items-center justify-between gap-4">
+          <div>
+            <p class="text-sm font-extrabold">Ready to respond?</p>
+            <p class="text-xs text-indigo-300 mt-0.5">
+              Write your reply and it will be sent directly to {{ query.email }}.
+            </p>
+          </div>
+          <button [routerLink]="['/admin/contacts', query.id, 'reply']"
+            class="shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-900
+                   rounded-xl text-sm font-bold hover:bg-indigo-50 transition-all active:scale-95">
+            <i class="pi pi-reply text-xs"></i> Write Reply
+          </button>
+        </div>
+
+      </div>
+
+      <!-- RIGHT — Sender info sidebar -->
+      <div class="col-span-12 lg:col-span-4 space-y-5">
+
+        <!-- Sender card -->
+        <div class="bg-linear-to-br from-indigo-900 to-indigo-950 rounded-2xl p-6
+                    text-white space-y-5 shadow-lg shadow-indigo-900/20">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-300">Sender</p>
+
+          <!-- Avatar + name -->
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/10
+                        flex items-center justify-center shrink-0">
+              <span class="text-lg font-black tracking-tight">{{ initials(query.fullName) }}</span>
+            </div>
+            <div class="min-w-0">
+              <p class="text-white font-bold text-sm leading-tight">{{ query.fullName }}</p>
+              <p class="text-indigo-300 text-xs mt-0.5 truncate">{{ query.email }}</p>
+            </div>
+          </div>
+
+          <div class="border-t border-white/10"></div>
+
+          <!-- Meta rows -->
+          <div class="space-y-3">
+            <div *ngIf="query.phone" class="flex items-center justify-between gap-2">
+              <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Phone</span>
+              <span class="text-xs font-semibold text-indigo-100">{{ query.phone }}</span>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Received</span>
+              <span class="text-xs font-semibold text-indigo-100">{{ formatDate(query.createdAt) }}</span>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Query ID</span>
+              <span class="text-xs font-bold font-mono bg-white/10 px-2 py-0.5 rounded-md text-indigo-200">
+                CQ-{{ query.id }}
+              </span>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Status</span>
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full
+                           text-[10px] font-bold border" [ngClass]="statusClass(query.status)">
+                <span class="w-1.5 h-1.5 rounded-full" [ngClass]="statusDot(query.status)"></span>
+                {{ query.status }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-2">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1 mb-3">
+            Quick Actions
+          </p>
+
+          <button *ngIf="query.status !== 'REPLIED'"
+            [routerLink]="['/admin/contact', query.id, 'reply']"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
+                   text-indigo-900 bg-indigo-900/5 hover:bg-indigo-900/10 transition-colors group">
+            <span class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0">
+              <i class="pi pi-reply text-sm text-indigo-900"></i>
+            </span>
+            Reply to This Query
+            <i class="pi pi-arrow-right text-xs ml-auto text-indigo-900/40"></i>
+          </button>
+
+          <a [href]="'mailto:' + query.email + '?subject=Re: ' + query.subject"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
+                   text-slate-600 hover:bg-slate-50 transition-colors group">
+            <span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+              <i class="pi pi-external-link text-sm text-slate-500"></i>
+            </span>
+            Open in Mail Client
+            <i class="pi pi-arrow-right text-xs ml-auto text-slate-300"></i>
+          </a>
+
+          <button routerLink="/admin/contacts"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
+                   text-slate-600 hover:bg-slate-50 transition-colors group">
+            <span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+              <i class="pi pi-list text-sm text-slate-500"></i>
+            </span>
+            All Queries
+            <i class="pi pi-arrow-right text-xs ml-auto text-slate-300"></i>
+          </button>
+
+          <button (click)="confirmDelete()" [disabled]="deleting"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold
+                   text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50">
+            <span class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
+              <i class="text-sm text-red-400"
+                [class]="deleting ? 'pi pi-spin pi-spinner' : 'pi pi-trash'"></i>
+            </span>
+            Delete Query
+            <i class="pi pi-arrow-right text-xs ml-auto text-red-200"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</ng-container>

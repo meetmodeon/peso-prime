@@ -1,0 +1,56 @@
+# =========================
+# Angular / Node
+# =========================
+node_modules/
+dist/
+dist-ssr/
+out-tsc/
+build/
+
+# =========================
+# Environment files (VERY IMPORTANT)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Logs
+# =========================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# =========================
+# Angular cache
+# =========================
+.angular/
+.cache/
+.vite/
+
+# =========================
+# IDE / Editor files
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Coverage / testing
+# =========================
+coverage/
+
+# =========================
+# Angular build artifacts
+# =========================
+*.local

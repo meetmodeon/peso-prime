@@ -1,0 +1,8 @@
+<app-project-form
+  *ngIf="project"
+  [isEditMode]="true"
+  [projectData]="project"
+  [submitting]="submitting"
+  (formSubmit)="update($event)"
+>
+</app-project-form>

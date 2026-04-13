@@ -1,0 +1,165 @@
+<!-- user/components/user-form.component.html -->
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8" autocomplete="off">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Full Name -->
+    <div class="space-y-2">
+      <label
+        class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+      >
+        Full Name <span class="text-red-500">*</span>
+      </label>
+      <div class="relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+          <i class="pi pi-id-card"></i>
+        </span>
+        <input
+          formControlName="name"
+          type="text"
+          placeholder="e.g. Marcus Thorne"
+          class="w-full pl-12 pr-4 py-3 bg-indigo-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+          [class.ring-2]="name.invalid && name.touched"
+          [class.ring-red-400]="name.invalid && name.touched"
+        />
+      </div>
+      <p
+        *ngIf="name.invalid && name.touched"
+        class="text-xs text-red-500 flex items-center gap-1"
+      >
+        <i class="pi pi-exclamation-circle text-[10px]"></i>
+        Full name is required
+      </p>
+    </div>
+
+    <!-- Email -->
+    <div class="space-y-2">
+      <label
+        class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+      >
+        Email
+        <span
+          class="text-[9px] text-slate-400 normal-case tracking-normal font-normal"
+        >
+          (optional)
+        </span>
+      </label>
+      <div class="relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+          <i class="pi pi-envelope"></i>
+        </span>
+        <input
+          formControlName="email"
+          type="email"
+          placeholder="e.g. marcus@example.com"
+          class="w-full pl-12 pr-4 py-3 bg-indigo-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+          [class.ring-2]="email.invalid && email.touched"
+          [class.ring-red-400]="email.invalid && email.touched"
+        />
+      </div>
+      <p
+        *ngIf="email.invalid && email.touched"
+        class="text-xs text-red-500 flex items-center gap-1"
+      >
+        <i class="pi pi-exclamation-circle text-[10px]"></i>
+        Enter a valid email
+      </p>
+    </div>
+
+    <!-- Phone -->
+    <div class="space-y-2">
+      <label
+        class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+      >
+        Contact No
+        <span
+          class="text-[9px] text-slate-400 normal-case tracking-normal font-normal"
+        >
+          (optional)
+        </span>
+      </label>
+      <div class="relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+          <i class="pi pi-phone"></i>
+        </span>
+        <input
+          formControlName="phone"
+          type="text"
+          placeholder="e.g. 9810000000"
+          class="w-full pl-12 pr-4 py-3 bg-indigo-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+        />
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="space-y-2">
+      <label
+        class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 flex items-center gap-2"
+      >
+        Password
+        <span *ngIf="!isEdit" class="text-red-500">*</span>
+        <span
+          *ngIf="isEdit"
+          class="text-[9px] text-slate-400 normal-case tracking-normal font-normal"
+        >
+          (leave blank to keep current)
+        </span>
+      </label>
+      <div class="relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+          <i class="pi pi-lock"></i>
+        </span>
+        <input
+          formControlName="password"
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="Min. 8 characters"
+         
+          class="w-full pl-12 pr-12 py-3 bg-indigo-500/5 border-none rounded-lg focus:ring-2 focus:ring-indigo-900 transition-all font-medium placeholder:text-slate-400"
+          [class.ring-2]="password.invalid && password.touched"
+          [class.ring-red-400]="password.invalid && password.touched"
+        />
+        <button
+          type="button"
+          (click)="togglePassword()"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-900 transition-colors"
+        >
+          <i [class]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+        </button>
+      </div>
+      <p
+        *ngIf="password.invalid && password.touched"
+        class="text-xs text-red-500 flex items-center gap-1"
+      >
+        <i class="pi pi-exclamation-circle text-[10px]"></i>
+        Password must be at least 8 characters
+      </p>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div
+    class="pt-10 flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-100"
+  >
+    <button
+      routerLink="/admin/users"
+      type="button"
+      class="w-full sm:w-auto px-8 py-3 rounded-lg font-bold text-slate-600 hover:bg-slate-100 transition-all active:scale-95"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      [disabled]="isLoading()"
+      class="w-full sm:w-auto px-10 py-3 bg-indigo-900 text-white rounded-lg font-bold shadow-lg shadow-indigo-900/20 hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+    >
+      <i [class]="isLoading() ? 'pi pi-spin pi-spinner' : 'pi pi-save'"></i>
+      {{
+        isLoading()
+          ? isEdit
+            ? "Updating..."
+            : "Saving..."
+          : isEdit
+            ? "Update User"
+            : "Save User"
+      }}
+    </button>
+  </div>
+</form>

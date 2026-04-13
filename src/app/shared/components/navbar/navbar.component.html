@@ -1,0 +1,210 @@
+<div class="bg-indigo-900 text-white py-2 border-b border-white/10 z-30">
+  <div
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs font-semibold"
+  >
+    <div class="flex items-center gap-6">
+      <a
+        class="flex items-center gap-2 hover:text-accent-green transition-colors"
+        href="tel:+97715544332"
+      >
+        <span class="material-symbols-outlined text-sm">call</span>
+        {{ siteSetting()?.phone }}
+      </a>
+      <a
+        class="flex items-center gap-2 hover:text-accent-green transition-colors"
+        href="mailto:'siteSetting().email'"
+      >
+        <i class="fa-solid fa-envelope"></i>
+        <span>{{ siteSetting()?.email }}</span>
+      </a>
+    </div>
+
+    <div class="hidden sm:flex items-center gap-4">
+      <span>{{ siteSetting()?.workingHours?.days }}: {{ siteSetting()?.workingHours?.openTime }} AM - {{ siteSetting()?.workingHours?.closeTime }} PM</span>
+    </div>
+  </div>
+</div>
+<header
+  class="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      <div class="flex items-center gap-2">
+        <div class="first-company flex items-center gap-2">
+          <div class="p-1 rounded-lg">
+          <img 
+          [secureImage]="siteSetting()?.companyLogoId"
+          alt="logo of soli_testing" class="size-10 rounded-full object-cover" />
+        </div>
+        <div class="flex flex-col">
+          <span
+            class="font-heading uppercase font-800 text-xl tracking-tighter text-indigo-900 dark:text-white leading-none"
+            >
+            {{ getSpliteString(siteSetting()?.companyName,0) }}
+            </span
+          >
+          <span
+            class="text-[10px] uppercase tracking-[0.2em] font-bold text-green-600"
+            >{{ getSpliteString(siteSetting()?.companyName,2) }} </span
+          >
+        </div>
+        </div>
+        <div class="second-company flex items-center gap-2">
+          <div class="p-1 rounded-lg">
+          <img src="logo.jpg" alt="logo of soli_testing" class="size-10" />
+        </div>
+        <div class="flex flex-col">
+          <span
+            class="font-heading uppercase font-800 text-xl tracking-tighter text-indigo-900 dark:text-white leading-none"
+            >prime</span
+          >
+          <span
+            class="text-[10px] uppercase tracking-[0.2em] font-bold text-green-600"
+            >Civil Lab</span
+          >
+        </div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-slate-700">
+        <a
+          routerLink="/home"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link text-sm font-semibold hover:text-indigo-900 transition-colors"
+        >
+          Home
+        </a>
+        <a
+          routerLink="/services"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link text-sm font-semibold hover:text-indigo-900 transition-colors"
+          href="#"
+        >
+          Services
+        </a>
+
+        <a
+          routerLink="/projects"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link text-sm font-semibold hover:text-indigo-900 transition-colors"
+          href="#"
+        >
+          Projects
+        </a>
+
+        <a
+          routerLink="/portfolio"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link text-sm font-semibold hover:text-indigo-900 transition-colors"
+          href="#"
+        >
+          Portfolio
+        </a>
+
+        <a
+        routerLink="/contact"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link text-sm font-semibold hover:text-indigo-900 transition-colors"
+          href="#"
+        >
+          Contact Us
+        </a>
+        <a
+        routerLink="/our_teams"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link text-sm font-semibold hover:text-indigo-900 transition-colors"
+          href="#"
+        >
+          Our Teams
+        </a>
+      </nav>
+
+      <!-- Mobile Menu -->
+      <nav class="flex md:hidden">
+        <button
+          (click)="menu.toggle($event)"
+          class="border rounded-md border-indigo-400 px-3 py-1 active:scale-90 cursor-pointer"
+        >
+          <i class="pi pi-bars text-lg"></i>
+        </button>
+
+        <!-- Updated Popover -->
+        <p-popover #menu>
+          <div class="flex flex-col gap-4 p-4 w-48 bg-white/80 rounded-2xl [&>a]:text-gray-500">
+            <a
+             routerLink="/"
+              class="text-sm font-semibold hover:text-indigo-900"
+              (click)="menu.hide()"
+            >
+              Home
+            </a>
+            <a
+             routerLink="/services"
+              class="text-sm font-semibold hover:text-indigo-900"
+              (click)="menu.hide()"
+            >
+              Services
+            </a>
+
+            <a
+            routerLink="/projects"
+              class="text-sm font-semibold hover:text-indigo-900"
+              (click)="menu.hide()"
+            >
+              Projects
+            </a>
+
+            <a
+              routerLink="/portfolio"
+              class="text-sm font-semibold hover:text-indigo-900"
+              (click)="menu.hide()"
+            >
+              Portfolio
+            </a>
+
+            <a
+            routerLink="/contact"
+              class="text-sm font-semibold hover:text-indigo-900"
+              (click)="menu.hide()"
+            >
+              Contact_Us
+            </a>
+            <a
+            routerLink="/our_teams"
+              class="text-sm font-semibold hover:text-indigo-900"
+              (click)="menu.hide()"
+            >
+              Our Teams
+            </a>
+          </div>
+        </p-popover>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <button
+          (click)="showDialog()"
+          class="bg-indigo-900 hover:bg-indigo-900 /90 text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg shadow-indigo-900 /20 transition-all active:scale-95"
+        >
+          Query?
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="dialog-box-of-query-section">
+  <p-dialog
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [closable]="false"
+  >
+    <app-query-page [buttonType]="'Close'"/>
+  </p-dialog>
+</div>

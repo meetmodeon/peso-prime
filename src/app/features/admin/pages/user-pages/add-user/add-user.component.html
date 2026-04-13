@@ -1,0 +1,19 @@
+<header class="fixed top-0 right-0 w-[calc(100%-64px)] lg:w-[calc(100%-288px)]
+                   z-40 bg-white backdrop-blur-md h-20 flex items-center px-8 gap-4">
+      <button routerLink="/admin/users"
+              class="w-8 h-8 flex items-center justify-center rounded-lg
+                     hover:bg-slate-100 text-slate-500 transition-colors">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <h2 class="text-xl font-bold tracking-tight text-indigo-900">Add New User</h2>
+    </header>
+
+    <main class="pt-24 px-6">
+      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8">
+        <app-user-form
+          mode="add"
+          [isLoading]="isLoading"
+          (formSubmit)="onSubmit($event)"
+        />
+      </div>
+    </main>

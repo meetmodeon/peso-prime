@@ -1,0 +1,21 @@
+ <!-- Loading member data -->
+    <div *ngIf="loading" class="flex justify-center items-center h-screen">
+      <div class="w-8 h-8 border-4 border-indigo-900 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+ 
+    <!-- Load error -->
+    <div *ngIf="loadError && !loading" class="flex flex-col items-center justify-center h-screen gap-4">
+      <i class="pi pi-exclamation-triangle text-4xl text-red-400"></i>
+      <p class="text-gray-500 text-sm">{{ loadError }}</p>
+    </div>
+ 
+    <!-- Form — only rendered once member data is ready -->
+    <app-team-member-form
+      *ngIf="!loading && !loadError"
+      title="Edit Member"
+      submitLabel="Update Member"
+      [submitting]="submitting"
+      [error]="error"
+      [existingMember]="existingMember"
+      (formSubmit)="onFormSubmit($event)"
+    />

@@ -1,0 +1,321 @@
+<!-- ══════════════════════════════════════════════════════════════
+     LOADING STATE
+══════════════════════════════════════════════════════════════ -->
+<div *ngIf="loading" class="flex items-center justify-center min-h-screen">
+  <div class="flex flex-col items-center gap-4">
+    <div class="w-10 h-10 border-2 border-indigo-900/20 border-t-indigo-900 rounded-full animate-spin"></div>
+    <p class="text-sm text-slate-400 font-medium">Loading service…</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ERROR STATE
+══════════════════════════════════════════════════════════════ -->
+<div *ngIf="error && !loading" class="flex items-center justify-center min-h-screen px-6">
+  <div class="flex flex-col items-center gap-4 text-center max-w-sm">
+    <div class="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center">
+      <i class="pi pi-exclamation-triangle text-2xl text-red-400"></i>
+    </div>
+    <p class="text-sm font-semibold text-slate-600">{{ error }}</p>
+    <button routerLink="/admin/services"
+      class="flex items-center gap-2 px-4 py-2 bg-indigo-900 text-white text-xs font-bold rounded-lg">
+      <i class="pi pi-arrow-left text-xs"></i> Back to Services
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════════════════════ -->
+<ng-container *ngIf="!loading && !error && service">
+
+  <!-- ── Sticky Header ──────────────────────────────────────── -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-indigo-900/10 h-16 flex items-center justify-between px-8">
+    <div class="flex items-center gap-3">
+      <button routerLink="/admin/services"
+        class="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">
+        <i class="pi pi-arrow-left text-xs"></i>
+      </button>
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-900">Service Management</p>
+        <h1 class="text-base font-extrabold text-slate-900 leading-tight truncate max-w-xs">
+          {{ service.title }}
+        </h1>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Edit -->
+      <button [routerLink]="['/admin/services/edit', service.id]"
+        class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-indigo-900/20 text-indigo-900 text-sm font-bold hover:bg-indigo-900/5 transition-all active:scale-95">
+        <i class="pi pi-pencil text-xs"></i> Edit
+      </button>
+      <!-- Delete -->
+      <button (click)="confirmDelete()" [disabled]="deleting"
+        class="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+        <i class="text-xs" [class]="deleting ? 'pi pi-spin pi-spinner' : 'pi pi-trash'"></i>
+        {{ deleting ? 'Deleting…' : 'Delete' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Hero Banner ──────────────────────────────────────────── -->
+  <div class="relative w-full overflow-hidden" style="height:300px">
+
+    <!-- Cover image or linear fallback -->
+    <ng-container *ngIf="service.imageId; else heroBg">
+      <img [secureImage]="service.imageId" [alt]="service.title"
+        class="w-full h-full object-cover" />
+      <!-- linear overlay so text is always readable -->
+      <div class="absolute inset-0 bg-linear-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
+    </ng-container>
+
+    <!-- No image: rich linear background -->
+    <ng-template #heroBg>
+      <div class="absolute inset-0 bg-linear-to-br from-indigo-900 via-indigo-800 to-slate-900">
+        <!-- Decorative grid -->
+        <div class="absolute inset-0 opacity-[0.04]"
+          style="background-image:linear-linear(rgba(255,255,255,1) 1px,transparent 1px),linear-linear(90deg,rgba(255,255,255,1) 1px,transparent 1px);background-size:48px 48px"></div>
+        <!-- Glowing orb -->
+        <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full"
+          style="background:radial-linear(circle,rgba(200,164,74,.18) 0%,transparent 70%)"></div>
+      </div>
+    </ng-template>
+
+    <!-- Hero text overlay -->
+    <div class="absolute bottom-0 left-0 right-0 px-8 pb-7 max-w-6xl mx-auto">
+      <!-- Type badge -->
+      <div class="flex items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border"
+          [ngClass]="badge(service.type)">
+          <i class="pi text-[10px]" [class]="icon(service.type)"></i>
+          {{ service.type }}
+        </span>
+        <span class="text-[10px] font-bold text-white/50 uppercase tracking-widest">
+          SVC-{{ service.id }}
+        </span>
+      </div>
+
+      <h2 class="text-3xl font-black text-white tracking-tight leading-tight drop-shadow-sm"
+        style="font-family:'Fraunces',serif">
+        {{ service.title }}
+      </h2>
+    </div>
+  </div>
+
+  <!-- ── Page Body ─────────────────────────────────────────────── -->
+  <div class="max-w-6xl mx-auto px-8 py-8">
+    <div class="grid grid-cols-12 gap-8">
+
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- LEFT — Main details                                      -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div class="col-span-12 lg:col-span-8 space-y-6">
+
+        <!-- ── Description ── -->
+        <div *ngIf="service.description" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0">
+              <i class="pi pi-align-left text-indigo-900 text-sm"></i>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-900">Description</h3>
+          </div>
+          <p class="text-sm leading-relaxed text-slate-600">{{ service.description }}</p>
+        </div>
+
+        <!-- ── Process Steps ── -->
+        <div *ngIf="service.processSteps.length" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0">
+                <i class="pi pi-list-check text-indigo-900 text-sm"></i>
+              </div>
+              <h3 class="text-base font-extrabold text-slate-900">Process Steps</h3>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2.5 py-1 bg-slate-50 rounded-full border border-slate-100">
+              {{ service.processSteps.length }} step{{ service.processSteps.length !== 1 ? 's' : '' }}
+            </span>
+          </div>
+
+          <!-- Vertical timeline-style list -->
+          <div class="space-y-0">
+            <div *ngFor="let step of service.processSteps; let i = index; let last = last; trackBy: trackByIndex"
+              class="flex gap-4 group">
+
+              <!-- Step indicator + connector line -->
+              <div class="flex flex-col items-center shrink-0">
+                <div class="w-8 h-8 rounded-full bg-indigo-900 text-white text-[11px] font-black flex items-center justify-center shadow-sm shadow-indigo-900/20 z-10">
+                  {{ i + 1 }}
+                </div>
+                <div *ngIf="!last" class="w-px flex-1 bg-indigo-100 my-1"></div>
+              </div>
+
+              <!-- Step content -->
+              <div [class.pb-5]="!last" class="pt-1.5 flex-1">
+                <p class="text-sm font-medium text-slate-800 leading-relaxed">{{ step }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Equipments ── -->
+        <div *ngIf="service.equipments.length" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+                <i class="pi pi-wrench text-amber-600 text-sm"></i>
+              </div>
+              <h3 class="text-base font-extrabold text-slate-900">Equipments Used</h3>
+            </div>
+            <span class="text-[10px] font-bold text-amber-600 uppercase tracking-widest px-2.5 py-1 bg-amber-50 rounded-full border border-amber-100">
+              {{ service.equipments.length }} item{{ service.equipments.length !== 1 ? 's' : '' }}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div *ngFor="let eq of service.equipments; let i = index; trackBy: trackByIndex"
+              class="flex items-center gap-3 px-4 py-3 bg-amber-50/60 border border-amber-100 rounded-xl hover:bg-amber-50 transition-colors">
+              <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                <i class="pi pi-wrench" style="font-size:11px"></i>
+              </div>
+              <span class="text-sm font-medium text-slate-700">{{ eq }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Deliverables ── -->
+        <div *ngIf="service.deliverables.length" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                <i class="pi pi-file-check text-emerald-600 text-sm"></i>
+              </div>
+              <h3 class="text-base font-extrabold text-slate-900">Deliverables</h3>
+            </div>
+            <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest px-2.5 py-1 bg-emerald-50 rounded-full border border-emerald-100">
+              {{ service.deliverables.length }} item{{ service.deliverables.length !== 1 ? 's' : '' }}
+            </span>
+          </div>
+
+          <div class="space-y-2">
+            <div *ngFor="let d of service.deliverables; let i = index; trackBy: trackByIndex"
+              class="flex items-start gap-3 px-4 py-3 bg-emerald-50/60 border border-emerald-100 rounded-xl hover:bg-emerald-50 transition-colors">
+              <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5">
+                <i class="pi pi-check" style="font-size:9px"></i>
+              </div>
+              <span class="text-sm font-medium text-slate-700 leading-relaxed">{{ d }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ════════════════════════════════════════════════════════ -->
+      <!-- RIGHT — Summary sidebar                                  -->
+      <!-- ════════════════════════════════════════════════════════ -->
+      <div class="col-span-12 lg:col-span-4 space-y-5">
+
+        <!-- Dark summary card -->
+        <div class="bg-linear-to-br from-indigo-900 to-indigo-950 rounded-2xl p-6 text-white space-y-5 shadow-lg shadow-indigo-900/20">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-300">Service Summary</p>
+
+          <!-- Type row -->
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              [ngClass]="iconBg(service.type)">
+              <i class="pi text-base" [class]="icon(service.type)"></i>
+            </div>
+            <div>
+              <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Type</p>
+              <p class="text-sm font-bold text-white mt-0.5">{{ service.type }}</p>
+            </div>
+          </div>
+
+          <div class="border-t border-white/10"></div>
+
+          <!-- Stat grid -->
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-white/5 rounded-xl py-3 px-2">
+              <p class="text-2xl font-black text-white">{{ service.processSteps.length}}</p>
+              <p class="text-[9px] text-indigo-400 font-bold uppercase tracking-wider mt-0.5">Steps</p>
+            </div>
+            <div class="bg-white/5 rounded-xl py-3 px-2">
+              <p class="text-2xl font-black text-white">{{ service.equipments.length }}</p>
+              <p class="text-[9px] text-indigo-400 font-bold uppercase tracking-wider mt-0.5">Equip.</p>
+            </div>
+            <div class="bg-white/5 rounded-xl py-3 px-2">
+              <p class="text-2xl font-black text-white">{{ service.deliverables.length }}</p>
+              <p class="text-[9px] text-indigo-400 font-bold uppercase tracking-wider mt-0.5">Outputs</p>
+            </div>
+          </div>
+
+          <div class="border-t border-white/10"></div>
+
+          <!-- Service ID -->
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Service ID</span>
+            <span class="text-xs font-bold text-indigo-200 font-mono bg-white/10 px-2 py-0.5 rounded-md">
+              SVC-{{ service.id }}
+            </span>
+          </div>
+
+          <!-- Image status -->
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Cover Image</span>
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-bold"
+              [class.text-emerald-400]="service.imageId"
+              [class.text-indigo-500]="!service.imageId">
+              <span class="w-1.5 h-1.5 rounded-full"
+                [class.bg-emerald-400]="service.imageId"
+                [class.bg-indigo-600]="!service.imageId"></span>
+              {{ service.imageId ? 'Uploaded' : 'None' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Quick action buttons -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-2">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1 mb-3">Quick Actions</p>
+
+          <button [routerLink]="['/admin/services/edit', service.id]"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-indigo-900 bg-indigo-900/5 hover:bg-indigo-900/10 transition-colors group">
+            <span class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0 group-hover:bg-indigo-900/15 transition-colors">
+              <i class="pi pi-pencil text-sm text-indigo-900"></i>
+            </span>
+            Edit This Service
+            <i class="pi pi-arrow-right text-xs ml-auto text-indigo-900/40"></i>
+          </button>
+
+          <button routerLink="/admin/services"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors group">
+            <span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+              <i class="pi pi-list text-sm text-slate-500"></i>
+            </span>
+            All Services
+            <i class="pi pi-arrow-right text-xs ml-auto text-slate-300"></i>
+          </button>
+
+          <button (click)="confirmDelete()" [disabled]="deleting"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center shrink-0 group-hover:bg-red-100 transition-colors">
+              <i class="text-sm text-red-400" [class]="deleting ? 'pi pi-spin pi-spinner' : 'pi pi-trash'"></i>
+            </span>
+            Delete Service
+            <i class="pi pi-arrow-right text-xs ml-auto text-red-200"></i>
+          </button>
+        </div>
+
+        <!-- Cover image thumbnail (if present) -->
+        <div *ngIf="service.imageId" class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          <div class="px-4 pt-4 pb-2">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Cover Image</p>
+          </div>
+          <img [secureImage]="service.imageId" [alt]="service.title"
+            class="w-full aspect-video object-cover" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</ng-container>

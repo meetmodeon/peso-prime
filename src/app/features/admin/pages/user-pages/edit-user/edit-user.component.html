@@ -1,0 +1,29 @@
+<header class="fixed top-0 right-0 w-[calc(100%-64px)] lg:w-[calc(100%-288px)]
+                   z-40 bg-white backdrop-blur-md h-20 flex items-center px-8 gap-4">
+      <button routerLink="/admin/users"
+              class="w-8 h-8 flex items-center justify-center rounded-lg
+                     hover:bg-slate-100 text-slate-500 transition-colors">
+        <i class="pi pi-arrow-left"></i>
+      </button>
+      <h2 class="text-xl font-bold tracking-tight text-indigo-900">Edit User</h2>
+    </header>
+
+    <main class="pt-24 px-6">
+      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8">
+
+        <!-- Loading skeleton -->
+        <div *ngIf="isFetching" class="flex justify-center py-20">
+          <i class="pi pi-spin pi-spinner text-indigo-900 text-2xl"></i>
+        </div>
+
+        <!-- Form -->
+        <app-user-form
+          *ngIf="!isFetching && userData()"
+           mode="edit"
+          [initialData]="userData()"
+          [isLoading]="isLoading"
+          (formSubmit)="onSubmit($event)"
+        />
+
+      </div>
+    </main>

@@ -1,0 +1,208 @@
+<section
+  class="relative h-[85vh] min-h-150 w-full flex items-center overflow-hidden bg-gray-100"
+>
+  <p-carousel
+    #carousel
+    [value]="heroSlides()"
+    [numVisible]="1"
+    [numScroll]="1"
+    [circular]="true"
+    [autoplayInterval]="4000"
+    class="w-full h-full"
+    [showNavigators]="false"
+  >
+    <ng-template let-slide pTemplate="item">
+      <div class="relative w-full h-[85vh] flex items-center justify-center">
+        <img
+          class="absolute inset-0 w-full h-full object-cover scale-105"
+          [secureImage]="slide.imageId"
+          [attr.alt]="slide?.alt"
+        />
+
+        <div class="absolute inset-0 bg-black/20 z-10"></div>
+
+        <div class="relative z-20 w-full">
+          <div class="content pl-10">
+            <h1
+              data-aos="fade-right"
+              data-delay="200"
+              class="font-semibold text-3xl md:text-5xl font-800 text-white mb-6 max-w-xs md:max-w-xl lg:max-w-2xl"
+            >
+              {{ slide.title }}<br />
+              <!-- <span class="text-green-500">{{ slide.highlight }}</span> -->
+            </h1>
+            <p
+              data-aos="fade-right"
+              data-delay="300"
+              class="text-lg md:text-xl text-justify text-white/90 mb-12 max-w-xs md:max-w-xl lg:max-w-2xl"
+            >
+              {{ slide.details }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+  <div
+    class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-green-600 rounded-full hover:bg-green-700 text-white shadow-lg"
+  >
+    <button (click)="prevSlide($event)" class="size-10">
+      <i class="pi pi-arrow-left"></i>
+    </button>
+  </div>
+  <div
+    class="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-green-600 rounded-full hover:bg-green-700 text-white shadow-lg"
+  >
+    <button (click)="nextSlide($event)" class="size-10">
+      <i class="pi pi-arrow-right"></i>
+    </button>
+  </div>
+</section>
+
+<section>
+  <div
+    class="bg-white dark:bg-background-dark py-12 border-b border-slate-100 dark:border-slate-800"
+  >
+    <div class="max-w-7xl mx-auto px-4 relative">
+      <p
+        class="text-center text-xs font-bold uppercase tracking-[0.3em] text-slate-400 mb-8"
+      >
+        Trusted by Our Clients
+      </p>
+      <div class="view-more-btn absolute top-3 right-2">
+        <a
+          routerLink="/allClients"
+          class="group flex items-center gap-2 text-indigo-900 font-bold hover:gap-4 transition-all"
+          href="#"
+        >
+          View All Clients
+          <span class="material-symbols-outlined">
+            <i class="pi pi-arrow-right" style="font-size: 0.7rem"></i>
+          </span>
+        </a>
+      </div>
+      <div
+        class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-60 grayscale hover:grayscale-0 transition-all"
+      >
+        @for (client of clients(); track $index) {
+         @if (clients) {
+           <div class="flex items-center gap-3">
+          <i *ngIf="!client?.companyLogoId" class="fa-solid fa-building-columns text-3xl"></i>
+          <span *ngIf="client?.companyLogoId">
+            <img [secureImage]="client?.companyLogoId" alt="" class="rounded-full size-10">
+          </span>
+          <span class="font-heading font-bold text-slate-600"
+            >{{ client?.companyName }}</span
+          >
+        </div>
+         }
+        }
+       
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- short-details -->
+<section class="py-12 bg-slate-50 dark:bg-background-dark/20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Card 1: Experience -->
+      <div
+        data-aos="fade-up"
+        data-duration="600"
+        data-delay="100"
+        class="p-8 rounded-2xl shadow-lg border border-indigo-900/20 flex items-start gap-6 hover:shadow-xl transition-all duration-300 bg-[#003366] text-white"
+      >
+        <div class="bg-indigo-900/10 p-4 rounded-xl">
+          <span class="material-symbols-outlined text-white text-3xl">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </span>
+        </div>
+        <div>
+          <h3 class="font-heading font-bold text-white text-lg mb-1">
+            <span
+              countAnimation
+              [animatedCounter]=getAge()
+              [duration]="3000"
+              unit="+"
+            ></span>
+            Years Experience
+          </h3>
+          <p class="text-white/80 text-sm">
+            Unparalleled expertise in Himalayan geotechnical engineering and
+            analysis.
+          </p>
+        </div>
+      </div>
+      <!-- Card 2: Certification -->
+      <div
+        data-aos="fade-up"
+        data-duration="600"
+        data-delay="100"
+        class="p-8 rounded-2xl shadow-lg border border-green-600/20 flex items-start gap-6 hover:shadow-xl transition-all duration-300 bg-[#E8F5E9] dark:bg-green-600/20"
+      >
+        <div class="bg-green-600/10 p-4 rounded-xl">
+          <span class="material-symbols-outlined text-green-600 text-3xl">
+            <i class="fa-solid fa-users"></i>
+          </span>
+        </div>
+        <div>
+          <h3 class="font-heading font-bold text-green-600 text-lg mb-1">
+            <span
+              countAnimation
+              [animatedCounter]="totalClient"
+              [duration]="3000"
+              unit="+"
+            ></span>
+            Trusted by Our Clients
+          </h3>
+          <p class="text-slate-700 dark:text-slate-300 text-sm">
+            We prioritize client satisfaction by maintaining strict quality
+            standards, ensuring every project is handled with professionalism,
+            accuracy, and transparency.
+          </p>
+        </div>
+      </div>
+      <!-- Card 3: Projects -->
+      <div
+        data-aos="fade-up"
+        data-duration="600"
+        data-delay="100"
+        class="p-8 rounded-2xl shadow-lg border border-slate-200 flex items-start gap-6 hover:shadow-xl transition-all duration-300 bg-slate-100 dark:bg-slate-800"
+      >
+        <div class="bg-indigo-900/10 p-4 rounded-xl">
+          <span class="material-symbols-outlined text-indigo-900 text-3xl">
+            <i class="pi pi-building" style="font-size: 2rem"></i>
+          </span>
+        </div>
+        <div>
+          <h3
+            class="font-heading font-bold text-slate-900 dark:text-white text-lg mb-1"
+          >
+            <span
+              countAnimation
+              [animatedCounter]="totalProject"
+              [duration]="3000"
+              unit="+"
+            ></span>
+            Projects Completed
+          </h3>
+          <p class="text-slate-500 dark:text-slate-400 text-sm">
+            Proven track record across infrastructure, energy, and urban
+            development sectors.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Features  -->
+  <app-home-project></app-home-project>
+<!-- Industries we serve -->
+ <app-home-service ></app-home-service>
+<!-- Meet our export -->
+<app-team-section />
+
+<!-- Testimonal list -->
+<app-home-client-testimonial [clients]="clients()"/>

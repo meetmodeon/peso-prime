@@ -1,0 +1,178 @@
+<section class="main-box min-h-screen flex items-center justify-center relative overflow-hidden">
+  <!-- Background -->
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-indigo-900/20 mix-blend-multiply z-10"></div>
+    <img
+      alt="Geotechnical engineering project"
+      class="w-full h-full object-cover"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvPpF9spzK5j9TCzAQzMCrn8icZTq2BbmUo3NuPh2DLExwhZFrnnKUd5hFHq0bEavF8ZeKvcLVAKsEKNdAAWCnXgCpgloKUD4vxBvYRZZMbXac7VzxDobiuEaB4nIeD1mdx5eaQYl8bXmOf_w-444MqVjkAksjoItwLrfxWvOyYh4PIf-iJrn7AUaCxOVfOWZsXJLik-Uw7DxfLKEL1XpoIiWQH_-FBMYk_F42XLOmg9HefIsg5F8yh-A3Q2ZpZocK26XvgDdThesg"
+    />
+  </div>
+
+  <main class="relative z-20 w-full max-w-6xl px-4 flex flex-col md:flex-row items-center justify-center gap-12 lg:gap-24 pt-5">
+
+    <!-- Left Branding -->
+    <div class="hidden lg:flex flex-col text-white max-w-md">
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="bg-white/20 p-2 rounded-lg">
+            <img src="logo.jpg" alt="logo" class="size-8" />
+          </div>
+          <div>
+            <h1 class="text-5xl font-extrabold tracking-tight">Peso Consultants</h1>
+            <span class="text-slate-200">Geotechnical Services</span>
+          </div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <i class="fas fa-hand-paper text-yellow-400 text-2xl animate-bounce"></i>
+          <h2 class="text-3xl font-semibold leading-tight mb-4">{{ greeting }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="w-full max-w-120">
+      <div class="bg-white/80 rounded-2xl shadow-2xl p-4 md:p-5 flex flex-col">
+
+        <!-- Mobile Logo -->
+        <div class="flex lg:hidden items-center gap-3 mb-8">
+          <div class="bg-indigo-900 p-1.5 rounded-lg">
+            <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path d="M42.1739 20.1739L27.8261 5.82609C29.1366 7.13663 28.3989 10.1876 26.2002 13.7654C24.8538 15.9564 22.9595 18.3449 20.6522 20.6522C18.3449 22.9595 15.9564 24.8538 13.7654 26.2002C10.1876 28.3989 7.13663 29.1366 5.82609 27.8261L20.1739 42.1739C21.4845 43.4845 24.5355 42.7467 28.1133 40.548C30.3042 39.2016 32.6927 37.3073 35 35C37.3073 32.6927 39.2016 30.3042 40.548 28.1133C42.7467 24.5355 43.4845 21.4845 42.1739 20.1739Z" fill="currentColor"></path>
+            </svg>
+          </div>
+          <span class="text-xl font-bold text-indigo-900">Peso Consultants</span>
+        </div>
+
+        <div class="mb-2">
+          <h3 class="text-2xl font-bold text-slate-900 mb-2">Portal Sign In</h3>
+          <p class="text-slate-600">Enter your credentials to access your dashboard.</p>
+        </div>
+
+        <!-- Global Error Banner -->
+        @if (errorMessage) {
+          <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm">
+            <i class="pi pi-exclamation-circle text-red-500"></i>
+            {{ errorMessage }}
+          </div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+
+          <!-- Username -->
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2">Username</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <i class="pi pi-user"></i>
+              </span>
+              <input
+                formControlName="username"
+                class="w-full pl-10 pr-4 py-3 bg-white border rounded-lg focus:ring-2 focus:ring-indigo-900 focus:border-indigo-900 transition-all text-slate-900 placeholder:text-slate-400"
+                [class.border-red-400]="username.invalid && username.touched"
+                [class.border-slate-200]="!(username.invalid && username.touched)"
+                placeholder="example123"
+                type="text"
+              />
+            </div>
+            <!-- Validation Messages -->
+            @if (username.invalid && username.touched) {
+              @if (username.errors?.['required']) {
+                <p class="mt-1 text-xs text-red-500 flex items-center gap-1">
+                  <i class="pi pi-exclamation-triangle"></i> Username field is required
+                </p>
+              }
+            }
+          </div>
+
+          <!-- Password -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-sm font-semibold text-slate-700">Password</label>
+              <a class="text-sm font-medium text-indigo-900 hover:underline" href="#">Forgot Password?</a>
+            </div>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <i class="pi pi-lock"></i>
+              </span>
+              <input
+                formControlName="password"
+                class="w-full pl-10 pr-12 py-3 bg-white border rounded-lg focus:ring-2 focus:ring-indigo-900 focus:border-indigo-900 transition-all text-slate-900 placeholder:text-slate-400"
+                [class.border-red-400]="password.invalid && password.touched"
+                [class.border-slate-200]="!(password.invalid && password.touched)"
+                placeholder="••••••••"
+                [type]="showPassword ? 'text' : 'password'"
+              />
+              <button
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                (click)="togglePassword()"
+              >
+                <i [class]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+              </button>
+            </div>
+            <!-- Validation Messages -->
+            @if (password.invalid && password.touched) {
+              @if (password.errors?.['required']) {
+                <p class="mt-1 text-xs text-red-500 flex items-center gap-1">
+                  <i class="pi pi-exclamation-triangle"></i> Password field is required
+                </p>
+              } @else if (password.errors?.['minlength']) {
+                <p class="mt-1 text-xs text-red-500 flex items-center gap-1">
+                  <i class="pi pi-exclamation-triangle"></i> Password must be at least 9 characters
+                </p>
+              }
+            }
+          </div>
+
+          <!-- Remember Me -->
+          <div class="flex items-center">
+            <input
+              formControlName="remember"
+              class="w-4 h-4 text-indigo-900 border-slate-300 rounded focus:ring-indigo-900"
+              id="remember"
+              type="checkbox"
+            />
+            <label class="ml-2 text-sm text-slate-600 cursor-pointer" for="remember">Keep me logged in</label>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full bg-indigo-900 hover:bg-indigo-900/90 text-white font-bold py-3.5 px-4 rounded-lg transition-colors shadow-lg shadow-indigo-900/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            [disabled]="isLoading"
+          >
+            @if (isLoading) {
+              <i class="pi pi-spin pi-spinner"></i>
+              <span>Signing In...</span>
+            } @else {
+              <span>Sign In</span>
+              <i class="pi pi-sign-in"></i>
+            }
+          </button>
+
+        </form>
+
+        <!-- B2B Notice -->
+        <div class="mt-10 pt-8 border-t border-slate-200/50">
+          <div class="flex items-start gap-3 p-4 bg-indigo-900/5 rounded-xl border border-indigo-900/10">
+            <div>
+              <p class="text-sm font-semibold text-indigo-900 mb-1">B2B Portal Access</p>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Don't have an account? Access is managed by your organization. Please
+                <span class="font-bold text-indigo-900">contact your project manager</span> for activation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center">
+          <p class="text-[11px] uppercase tracking-widest text-slate-400 font-bold">
+            © 2026 Peso Consultants Ltd. Geotechnical Experts.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</section>

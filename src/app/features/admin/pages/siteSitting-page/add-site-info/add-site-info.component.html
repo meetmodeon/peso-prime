@@ -1,0 +1,409 @@
+<div class="p-6 max-w-4xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-xl font-semibold text-gray-800">Site Settings</h1>
+  </div>
+
+  <!-- TABS -->
+  <div class="flex gap-0 border-b mb-6 border-b-gray-500/20">
+    <button
+      (click)="tab = 'general'"
+      class="px-5 py-2 text-sm flex items-center gap-1 cursor-pointer"
+      [class.border-b-2]="tab === 'general'"
+      [class.border-green-600]="tab === 'general'"
+      [class.font-semibold]="tab === 'general'"
+      [class.text-gray-800]="tab === 'general'"
+      [class.text-gray-400]="tab !== 'general'"
+    >
+      General Info
+    </button>
+
+    <button
+      (click)="goToHeroTab()"
+      class="px-5 py-2 text-sm flex items-center gap-1 cursor-pointer"
+      [class.border-b-2]="tab === 'hero'"
+      [class.border-green-600]="tab === 'hero'"
+      [class.font-semibold]="tab === 'hero'"
+      [class.text-gray-800]="tab === 'hero'"
+      [class.text-gray-400]="tab !== 'hero'"
+    >
+      Hero Section
+      <span *ngIf="!form.id" class="text-xs opacity-40">🔒</span>
+    </button>
+  </div>
+
+  <!-- ===================== GENERAL TAB ===================== -->
+  <div *ngIf="tab === 'general'" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <!-- Company Info -->
+    <div class="bg-white p-5 rounded-xl border shadow-sm border-gray-500/20">
+      <h2
+        class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-4"
+      >
+        Company Info
+      </h2>
+      <div class="space-y-3">
+        <input
+          [(ngModel)]="form.companyName"
+          placeholder="Company Name"
+          class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+        />
+        <input
+          [(ngModel)]="form.email"
+          placeholder="Email"
+          class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+        />
+        <input
+          [(ngModel)]="form.phone"
+          placeholder="Phone"
+          class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+        />
+        <input
+          [(ngModel)]="form.address"
+          placeholder="Address"
+          class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+        />
+      </div>
+    </div>
+
+    <!-- Working Hours + Logo -->
+    <div class="bg-white p-5 rounded-xl border shadow-sm border-gray-500/20">
+      <h2
+        class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-4"
+      >
+        Working Hours
+      </h2>
+      <div class="space-y-3">
+        <input
+          [(ngModel)]="form.days"
+          placeholder="Days (e.g. Mon – Fri)"
+          class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+        />
+        <div class="flex gap-3">
+          <input
+            [(ngModel)]="form.openTime"
+            type="time"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+          <input
+            [(ngModel)]="form.closeTime"
+            type="time"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+      </div>
+      <div class="mt-5">
+        <label class="block mb-2 text-sm font-medium text-gray-500">
+          Company Logo
+        </label>
+
+        <!-- 🔴 Hidden file input -->
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          (change)="uploadLogo($event)"
+          class="hidden"
+        />
+
+        <!-- 🟢 Clickable area -->
+        <div
+          class="cursor-pointer hover:opacity-80 transition border rounded p-3 inline-block border-green-500/20 border-2"
+          (click)="fileInput.click()"
+        >
+          <!-- 🟡 Preview while uploading -->
+          <img
+            *ngIf="logoPreview; else savedImage"
+            [src]="logoPreview"
+            class="h-20 object-contain"
+          />
+
+          <!-- 🔵 Saved image from backend -->
+          <ng-template #savedImage>
+            <img
+              *ngIf="form.companyLogoId; else placeholder"
+              [secureImage]="form.companyLogoId"
+              class="h-20 object-contain"
+            />
+          </ng-template>
+
+          <!-- ⚪ Default placeholder -->
+          <ng-template #placeholder>
+            <div
+              class="h-20 w-20 flex items-center justify-center text-gray-400 border rounded"
+            >
+              Upload Logo
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Media Links — full width -->
+    <div
+      class="bg-white p-5 rounded-xl border border-gray-500/20 shadow-sm md:col-span-2"
+    >
+      <h2
+        class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-4"
+      >
+        Social Media Links
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0"
+            >f</span
+          >
+          <input
+            [(ngModel)]="form.socialMediaLinks.facebook"
+            placeholder="Facebook URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center text-xs font-bold flex-shrink-0"
+            >ig</span
+          >
+          <input
+            [(ngModel)]="form.socialMediaLinks.instagram"
+            placeholder="Instagram URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-bold flex-shrink-0"
+            >𝕏</span
+          >
+          <input
+            [(ngModel)]="form.socialMediaLinks.twitter"
+            placeholder="X / Twitter URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center text-xs font-bold flex-shrink-0"
+            >▶</span
+          >
+          <input
+            [(ngModel)]="form.socialMediaLinks.youtube"
+            placeholder="YouTube URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-xs font-bold flex-shrink-0"
+            >in</span
+          >
+          <input
+            [(ngModel)]="form.socialMediaLinks.linkedin"
+            placeholder="LinkedIn URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-bold flex-shrink-0"
+            >tk</span
+          >
+          <input
+            [(ngModel)]="form.socialMediaLinks.tiktok"
+            placeholder="TikTok URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Meta-data -->
+    <div
+      class="bg-white p-5 rounded-xl border border-gray-500/20 shadow-sm md:col-span-2"
+    >
+      <h2
+        class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-4"
+      >
+        Meta Data (SEO)
+      </h2>
+      <div class="grid grid-cols-1 gap-3">
+        <div class="flex flex-cols justify-between items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold flex-shrink-0 px-16"
+            >Title</span
+          >
+          <input
+            [(ngModel)]="form.metaTitle"
+            placeholder="Facebook URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center text-xs font-bold flex-shrink-0 px-16"
+            >Description</span
+          >
+          <input
+            [(ngModel)]="form.metaDescription"
+            placeholder="Instagram URL"
+            type="url"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Save -->
+    <div class="md:col-span-2 flex justify-end">
+      <button
+        (click)="saveSiteInfo()"
+        [disabled]="savingSiteInfo"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm disabled:opacity-50"
+      >
+        {{
+          savingSiteInfo
+            ? "Saving..."
+            : form.id
+              ? "Update Site Info"
+              : "Save Site Info"
+        }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== HERO TAB ===================== -->
+  <div *ngIf="tab === 'hero'">
+    <!-- Locked -->
+    <div
+      *ngIf="!form.id"
+      class="bg-gray-50 border rounded-xl p-10 text-center text-gray-400"
+    >
+      <div class="text-3xl mb-2">🔒</div>
+      <p class="font-medium text-gray-500">Save site info first</p>
+      <p class="text-sm mt-1">
+        Hero sections are linked to your site. Complete the General Info tab
+        first.
+      </p>
+      <button
+        (click)="tab = 'general'"
+        class="mt-4 text-sm text-green-600 underline"
+      >
+        Go to General Info
+      </button>
+      <div *ngIf="heroList.length === maxHeroSection" class="p-10 bg-red-500">
+        You reach max-size of hero-section please delete some section
+      </div>
+    </div>
+
+    <!-- Unlocked -->
+    <div *ngIf="form.id">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-sm font-semibold text-gray-500">Hero Sections</h2>
+        <button
+          (click)="addHero()"
+          class="border border-gray-300 bg-blue-500/20 hover:bg-blue-500/40 cursor-pointer px-4 py-2 rounded text-sm"
+        >
+          + Add Hero
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div
+          *ngFor="let hero of heroList; let i = index"
+          class="bg-white p-5 border rounded-xl shadow-sm border border-gray-500/20"
+        >
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-sm font-medium text-gray-500"
+              >Hero #{{ i + 1 }}</span
+            >
+            <button
+              (click)="deleteHero(hero.id, i)"
+              class="text-red-400 hover:text-red-600 text-sm cursor-pointer"
+            >
+              Delete
+            </button>
+          </div>
+
+          <input
+            [(ngModel)]="hero.title"
+            placeholder="Title"
+            class="w-full border p-2 mb-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          />
+          <textarea
+            [(ngModel)]="hero.details"
+            placeholder="Details"
+            rows="2"
+            class="w-full border p-2 rounded text-sm border-blue-500/20 shadow focus:outline-none focus:ring focus:ring-blue-500/60"
+          ></textarea>
+
+          <div
+            class="mt-4 border rounded p-3 cursor-pointer hover:opacity-80 transition border border-gray-500/20 shadow"
+            (click)="fileInput.click()"
+          >
+            <!-- Hidden input -->
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              class="hidden"
+              (change)="uploadHero($event, i)"
+            />
+
+            <!-- 🟡 If preview exists -->
+            <img
+              *ngIf="hero.preview; else savedHero"
+              [src]="hero.preview"
+              class="h-20 w-full object-cover rounded"
+            />
+
+            <!-- 🔵 Saved image (from backend using imageId) -->
+            <ng-template #savedHero>
+              <img
+                *ngIf="hero.imageId; else placeholder"
+                [secureImage]="hero.imageId"
+                class="h-20 w-full object-cover rounded"
+              />
+            </ng-template>
+
+            <!-- ⚪ Placeholder -->
+            <ng-template #placeholder>
+              <div
+                class="h-20 flex items-center justify-center text-gray-400 border rounded"
+              >
+                Click to upload hero image
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="flex justify-end mt-3">
+            <button
+              (click)="saveHero(hero)"
+              [disabled]="hero.saving"
+              class="border border-green-600 text-green-600 hover:bg-green-50 px-4 py-1.5 rounded text-sm disabled:opacity-50"
+            >
+              {{
+                hero.saving
+                  ? "Saving..."
+                  : hero.id
+                    ? "Update Hero"
+                    : "Save Hero"
+              }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

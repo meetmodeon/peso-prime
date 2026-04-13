@@ -1,0 +1,136 @@
+<section class="query-form">
+  <div
+    class="bg-white p-8 border border-slate-500/40 rounded-2xl shadow-md shadow-green-500"
+  >
+    <h4 class="font-heading text-xl font-bold mb-1">Send us a Message</h4>
+
+    <form
+      [formGroup]="contactForm"
+      (ngSubmit)="onSubmit()"
+      class="space-y-4 py-8"
+    >
+      <!-- Name + Email -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <input
+            type="text"
+            formControlName="fullName"
+            placeholder="Full Name"
+            class="w-full border border-black/20 rounded-lg py-3 px-4 focus:border-black/40 focus:ring-1 focus:ring-black/40 outline-none"
+          />
+          <p
+            *ngIf="f.fullName.touched && f.fullName.errors?.['required']"
+            class="text-red-500 text-sm"
+          >
+            Full name is required
+          </p>
+        </div>
+
+        <div>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="Email Address"
+            class="w-full border border-black/20 rounded-lg py-3 px-4 focus:border-black/40 focus:ring-1 focus:ring-black/40 outline-none"
+          />
+          <p
+            *ngIf="f.email.touched && f.email.errors?.['required']"
+            class="text-red-500 text-sm"
+          >
+            Email is required
+          </p>
+          <p
+            *ngIf="f.email.touched && f.email.errors?.['email']"
+            class="text-red-500 text-sm"
+          >
+            Invalid email format
+          </p>
+        </div>
+      </div>
+
+      <!-- Phone + Address -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <input
+            type="text"
+            formControlName="phone"
+            placeholder="Phone"
+            class="w-full border border-black/20 rounded-lg py-3 px-4 focus:border-black/40 focus:ring-1 focus:ring-black/40 outline-none"
+          />
+          <p
+            *ngIf="f.phone.touched && f.phone.errors?.['required']"
+            class="text-red-500 text-sm"
+          >
+            Phone is required
+          </p>
+        </div>
+
+        <div>
+          <input
+            type="text"
+            formControlName="address"
+            placeholder="Address"
+            class="w-full border border-black/20 rounded-lg py-3 px-4 focus:border-black/40 focus:ring-1 focus:ring-black/40 outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Subject -->
+      <div>
+        <input
+          type="text"
+          formControlName="subject"
+          placeholder="Subject"
+          class="w-full border border-black/20 rounded-lg py-3 px-4 focus:border-black/40 focus:ring-1 focus:ring-black/40 outline-none"
+        />
+        <p
+          *ngIf="f.subject.touched && f.subject.errors?.['required']"
+          class="text-red-500 text-sm"
+        >
+          Subject is required
+        </p>
+      </div>
+
+      <!-- Message -->
+      <div>
+        <textarea
+          formControlName="message"
+          rows="4"
+          placeholder="Your message..."
+          class="w-full border border-black/20 rounded-lg py-3 px-4 focus:border-black/40 focus:ring-1 focus:ring-black/40 outline-none"
+        ></textarea>
+        <p
+          *ngIf="f.message.touched && f.message.errors?.['required']"
+          class="text-red-500 text-sm"
+        >
+          Message is required
+        </p>
+        <p *ngIf="f.message.errors?.['maxlength']" class="text-red-500 text-sm">
+          Max 2000 characters allowed
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex justify-end gap-3">
+        <!-- Close Button -->
+        <button
+          *ngIf="buttonType === 'Close'"
+          type="button"
+          (click)="closeDialog()"
+          class="px-6 py-2 bg-red-500 text-white rounded"
+        >
+          Close
+        </button>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="contactForm.invalid"
+          class="px-6 py-2 bg-indigo-900 text-white rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

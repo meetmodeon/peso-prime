@@ -1,0 +1,179 @@
+<main class="flex-1 flex flex-col overflow-y-auto">
+  <!-- HEADER -->
+  <header class="bg-white border-b px-8 py-6 border-gray-500/20 shadow-sm">
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="text-3xl font-black text-indigo-900">Service Management</h2>
+        <p class="text-sm text-slate-500">Manage all consultancy services</p>
+      </div>
+
+      <button
+        routerLink="/admin/services/add"
+        class="bg-indigo-900 text-white px-5 py-2 rounded-lg text-sm font-bold cursor-pointer"
+      >
+        + New Service
+      </button>
+    </div>
+  </header>
+
+  <div class="p-8">
+    <!-- SEARCH -->
+    <div class="flex justify-between items-center mb-6">
+      <div class="relative w-full max-w-sm">
+        <i
+          class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        ></i>
+
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearch($event)"
+          placeholder="Search services..."
+          class="w-full border rounded-lg pl-10 pr-10 py-2 border-slate-500/40 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-500/60"
+        />
+
+        <button
+          *ngIf="searchQuery"
+          (click)="clearSearch()"
+          class="absolute right-3 top-1/2 -translate-y-1/2"
+        >
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
+      <div class="text-sm text-gray-500">{{ totalElements }} services</div>
+    </div>
+
+    <!-- TABLE -->
+    <div
+      class="bg-white border rounded-xl overflow-hidden border-slate-500/10 shadow-sm"
+    >
+      <table class="w-full text-left">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="p-4">Service</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th class="text-center">Steps</th>
+            <th class="text-center">Deliverables</th>
+            <th class="text-center p-4">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- LOADING -->
+          <tr *ngIf="loading">
+            <td colspan="6" class="p-6 text-center">Loading...</td>
+          </tr>
+
+          <!-- DATA -->
+          <tr *ngFor="let service of services; trackBy: trackById">
+            <td class="p-4 font-semibold">
+              <div class="flex items-center gap-3">
+                @if (service.imageId) {
+                  <img
+                    [secureImage]="service.imageId"
+                    class="size-20 bg-cover rounded-lg"
+                    alt="Service image"
+                  />
+                } @else {
+                  <div
+                    class="size-20 flex items-center justify-center bg-slate-100 rounded-lg"
+                  >
+                    <i class="pi pi-image text-slate-400 text-xl"></i>
+                  </div>
+                }
+
+                <span class="font-semibold text-slate-800">
+                  {{ service.title }}
+                </span>
+              </div>
+            </td>
+
+            <td>
+              <span
+                [ngClass]="typeClass(service.type)"
+                class="px-3 py-1 rounded-full text-xs"
+              >
+                <i [class]="typeIcon(service.type)"></i>
+                {{ service.type }}
+              </span>
+            </td>
+
+            <td class="text-sm text-gray-500">
+              {{ truncate(service.description || "") }}
+            </td>
+
+            <td class="text-center">
+              {{ service.processSteps.length || 0 }}
+            </td>
+
+            <td class="text-center">
+              {{ service.deliverables.length || 0 }}
+            </td>
+
+            <td class="text-right p-4 space-x-2">
+              <button [routerLink]="['/admin/services/view', service.id]">
+                <i class="pi pi-eye"></i>
+              </button>
+
+              <button [routerLink]="['/admin/services/edit', service.id]">
+                <i class="pi pi-file-edit"></i>
+              </button>
+
+              <button (click)="confirmDelete(service)"
+              class="p-1 text-red-500/80"
+              >
+                <i
+                  [class]="
+                    deleting === service.id
+                      ? 'pi pi-spin pi-spinner'
+                      : 'pi pi-trash'
+                  "
+                ></i>
+              </button>
+            </td>
+          </tr>
+
+          <!-- EMPTY -->
+          <tr *ngIf="!loading && services.length === 0">
+            <td colspan="6" class="p-10 text-center text-gray-400">
+              No services found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="flex justify-between items-center mt-6" *ngIf="totalPages > 0">
+      <p class="text-sm text-gray-500">
+        Showing {{ startItem }} - {{ endItem }} of {{ totalElements }}
+      </p>
+
+      <div class="flex gap-2">
+        <button 
+        [className]="isFirstPage?'bg-slate-200/40  p-2 rounded-md ':'bg-slate-500/20 p-2 rounded-md'"
+        (click)="goToPage(currentPage - 1)" [disabled]="isFirstPage">
+          Prev
+        </button>
+
+        <button
+          *ngFor="let p of pageNumbers"
+          (click)="p !== -1 && goToPage(p)"
+          [disabled]="p === -1"
+          [class.font-bold]="p === currentPage"
+        >
+          {{ p === -1 ? "..." : p + 1 }}
+        </button>
+
+        <button
+        (click)="goToPage(currentPage + 1)" [disabled]="isLastPage"
+        [className]="isLastPage?'bg-slate-200/40  p-2 rounded-md e':'bg-slate-500/20 p-2 rounded-md'"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

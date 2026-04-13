@@ -1,0 +1,181 @@
+<main class="flex flex-col items-center">
+  <div class="layout-content-container flex flex-col w-full max-w-300 px-6 md:px-10 py-10">
+
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row justify-between items-end gap-6 pb-8">
+      <div class="flex flex-col gap-2 max-w-2xl">
+        <h1 class="text-slate-900 dark:text-slate-100 text-4xl md:text-5xl font-black leading-tight tracking-[-0.033em]">
+          Our Projects
+        </h1>
+        <p class="text-slate-600 dark:text-slate-400 text-lg font-normal">
+          <strong
+            countAnimation
+            [animatedCounter]="totalElements || 500"
+            [duration]="3000"
+            unit="+"
+          ></strong>
+          projects successfully completed, showcasing decades of expertise in geotechnical site investigations, tunneling, and complex infrastructure development across Nepal.
+        </p>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="mb-10 overflow-x-auto">
+      <div class="flex border-b border-slate-200 dark:border-slate-800 gap-8 min-w-max">
+        <button
+          *ngFor="let tab of tabs"
+          (click)="selectTab(tab)"
+          class="flex flex-col items-center justify-center pb-3 pt-4 border-b-[3px] transition-colors duration-200"
+          [ngClass]="activeTab === tab.value
+            ? 'border-indigo-900 text-indigo-900 dark:border-indigo-400 dark:text-indigo-400'
+            : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'"
+        >
+          <p class="text-sm font-bold tracking-[0.015em]">{{ tab.label }}</p>
+        </button>
+      </div>
+    </div>
+
+    <!-- Skeleton Loading -->
+    <div *ngIf="loading && projects.length === 0" class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="animate-pulse">
+        <div class="rounded-xl aspect-video bg-slate-200 dark:bg-slate-700 mb-4"></div>
+        <div class="h-5 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-2"></div>
+        <div class="h-3 w-1/2 bg-slate-100 dark:bg-slate-600 rounded mb-2"></div>
+        <div class="h-3 w-full bg-slate-100 dark:bg-slate-600 rounded"></div>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div
+      *ngIf="projects.length > 0"
+      class="grid grid-cols-1 md:grid-cols-4 gap-8"
+    >
+      <div
+        *ngFor="let project of projects"
+        (click)="showProject(project)"
+        class="group flex flex-col gap-4 bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 cursor-pointer"
+      >
+        <!-- Image -->
+        <div class="w-full aspect-video bg-slate-200 dark:bg-slate-800 overflow-hidden relative">
+
+          <ng-container *ngIf="project.imageIds!==null; else imagePlaceholder">
+            <img
+              [secureImage]="project.imageIds[0]"
+              [alt]="project.title"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          </ng-container>
+
+          <ng-template #imagePlaceholder>
+            <div
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110 bg-slate-300 dark:bg-slate-700 flex items-center justify-center"
+            >
+              <i class="pi pi-image text-4xl text-slate-400 dark:text-slate-600"></i>
+            </div>
+          </ng-template>
+
+          <!-- Status Badge -->
+          <div class="absolute top-4 left-4">
+            <span
+              class="text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full"
+              [ngClass]="{
+                'bg-emerald-600': project.status === 'COMPLETED',
+                'bg-amber-500': project.status === 'ONGOING',
+                'bg-indigo-900': project.status === 'PENDING'
+              }"
+            >
+              {{ project.status | titlecase }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-6 flex flex-col gap-3">
+          <div>
+            <h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight group-hover:text-indigo-900 dark:group-hover:text-indigo-400 transition-colors">
+              {{ project.title }}
+            </h3>
+            <div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 mt-1">
+              <i class="pi pi-map-marker text-sm"></i>
+              <p class="text-xs font-medium">{{ project.location }}</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2 pt-2">
+            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed line-clamp-2" *ngFor="let scope of project.scopeOfWork">
+              {{ scope }}
+            </p>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <span
+                class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-bold text-slate-600 dark:text-slate-400"
+              >
+               {{ project.categoryTags }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      *ngIf="!loading && projects.length === 0"
+      class="text-center py-20 text-slate-400"
+    >
+      <i class="pi pi-folder-open text-5xl mb-4 block"></i>
+      <p class="text-base font-medium">No projects found.</p>
+    </div>
+
+    <!-- Load More Button -->
+    <div
+      *ngIf="!isLastPage && projects.length > 0"
+      class="flex justify-center mt-14"
+    >
+      <button
+        (click)="loadMore()"
+        [disabled]="loadingMore"
+        class="flex items-center gap-3 px-10 py-4 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:border-indigo-900 hover:text-indigo-900 dark:hover:border-indigo-400 dark:hover:text-indigo-400 transition-all duration-200 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        <ng-container *ngIf="loadingMore; else showMoreLabel">
+          <div class="w-4 h-4 border-2 border-indigo-900 border-t-transparent rounded-full animate-spin"></div>
+          Loading...
+        </ng-container>
+        <ng-template #showMoreLabel>
+          <i class="pi pi-folder-open text-sm"></i>
+          View More Projects
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold">
+            {{ remainingCount }}
+          </span>
+        </ng-template>
+      </button>
+    </div>
+
+    <!-- All Loaded Indicator -->
+    <div
+      *ngIf="isLastPage && projects.length > 0"
+      class="flex items-center justify-center gap-3 mt-14"
+    >
+      <div class="h-px w-16 bg-slate-200 dark:bg-slate-700"></div>
+      <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">
+        All {{ totalElements }} projects shown
+      </p>
+      <div class="h-px w-16 bg-slate-200 dark:bg-slate-700"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Project Detail Drawer -->
+<div class="dialog-box-of-query-section mt-4">
+  <p-drawer
+  *ngIf="visible && selectedProject"
+    [(visible)]="visible"
+    position="right"
+    [style]="{ width: '40rem', height: '100%' }"
+    [closable]="false"
+  >
+    <app-project
+     [project]="selectedProject"
+     ></app-project>
+  </p-drawer>
+</div>

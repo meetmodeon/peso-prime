@@ -1,0 +1,178 @@
+<!-- ── Sticky Header ─────────────────────────────────────────── -->
+<header
+  class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-indigo-900/10 h-16 flex items-center justify-between px-8"
+>
+  <div class="flex items-center gap-3">
+    <button
+      routerLink="/admin/clients"
+      type="button"
+      class="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all"
+    >
+      <i class="pi pi-arrow-left text-xs"></i>
+    </button>
+    <div>
+      <p
+        class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-900"
+      >
+        Client Management
+      </p>
+      <h1 class="text-base font-extrabold text-slate-900 leading-tight">
+        {{ isEditMode ? "Edit Client" : "Add New Client" }}
+      </h1>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    (click)="onSubmit()"
+    [disabled]="submitting"
+    class="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-bold text-white bg-indigo-900"
+  >
+    <i class="pi pi-save text-xs"></i>
+    {{ isEditMode ? "Update Client" : "Save Client" }}
+  </button>
+</header>
+
+<!-- ── Body ───────────────────────────────────────────── -->
+<div class="p-8 max-w-5xl mx-auto w-full">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-12 gap-8">
+      <!-- LEFT -->
+      <div class="col-span-12 lg:col-span-8 space-y-6">
+        <!-- Personal Info -->
+        <div class="bg-white rounded-2xl p-6 space-y-5">
+          <h3 class="font-bold">Personal Information</h3>
+
+          <!-- Name -->
+          <input
+            formControlName="name"
+            placeholder="Full Name"
+            class="w-full h-11 bg-slate-50 rounded-lg px-4 border border-slate-500/40"
+          />
+
+          <!-- Client Image -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold">Client Image</label>
+
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-xl bg-slate-100 overflow-hidden">
+                <img
+                  *ngIf="clientImagePreview"
+                  [src]="clientImagePreview"
+                  class="w-full h-full object-cover"
+                />
+                <img
+                  *ngIf="form.get('clientImageId')?.value"
+                  [secureImage]="form.get('clientImageId')?.value"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onClientImageChange($event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional -->
+        <div class="bg-white rounded-2xl p-6 space-y-5">
+          <h3 class="font-bold">Professional Details</h3>
+
+          <input
+            formControlName="position"
+            placeholder="Position"
+            class="w-full h-11 bg-slate-50 rounded-lg px-4 border border-slate-500/40"
+          />
+
+          <input
+            formControlName="companyName"
+            placeholder="Company"
+            class="w-full h-11 bg-slate-50 rounded-lg px-4 border border-slate-500/40"
+          />
+
+          <!-- Company Logo -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold">Company Logo</label>
+
+            <div class="flex items-center gap-4">
+              <div
+                class="w-16 h-16 rounded-xl bg-slate-100 overflow-hidden border border-slate-500/40"
+              >
+                <img
+                  *ngIf="companyLogoPreview"
+                  [src]="companyLogoPreview"
+                  class="w-full h-full object-cover border border-slate-500/40"
+                />
+                <img
+                  *ngIf="form.get('companyLogoId')?.value"
+                  [secureImage]="form.get('companyLogoId')?.value"
+                  class="w-full h-full object-cover border border-slate-500/40"
+                />
+              </div>
+
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onCompanyLogoChange($event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <textarea
+          formControlName="description"
+          class="w-full bg-slate-50 rounded-lg p-4 border border-slate-500/40"
+          placeholder="Notes..."
+        ></textarea>
+      </div>
+
+      <!-- RIGHT PREVIEW -->
+      <div class="col-span-12 lg:col-span-4">
+        <div class="bg-indigo-900 text-white p-6 rounded-2xl space-y-4">
+          <h4>Live Preview</h4>
+
+          <!-- Avatar -->
+          <div class="flex items-center gap-3">
+            <div
+              class="w-14 h-14 rounded-xl overflow-hidden bg-white/10 flex items-center justify-center"
+            >
+              <!-- Secure Image -->
+              <img
+                *ngIf="form.get('clientImageId')?.value"
+                [secureImage]="form.get('clientImageId')?.value"
+                class="w-full h-full object-cover"
+              />
+
+              <!-- Fallback initials -->
+              <span
+                *ngIf="!form.get('clientImageId')?.value"
+                class="text-lg font-black"
+              >
+                {{ initials }}
+              </span>
+            </div>
+
+            <div>
+              <p>{{ form.get("name")?.value || "Client Name" }}</p>
+            </div>
+          </div>
+
+          <!-- Details -->
+          <p>Position: {{ form.get("position")?.value }}</p>
+          <p>Company: {{ form.get("companyName")?.value }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="mt-6">
+      <button type="submit" class="bg-indigo-900 text-white px-6 py-2 rounded">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

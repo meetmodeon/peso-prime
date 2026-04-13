@@ -1,0 +1,609 @@
+<!-- ── Sticky Header ──────────────────────────────────────── -->
+<header
+  class="sticky top-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-indigo-900/10 h-16 flex items-center justify-between px-8"
+>
+  <div class="flex items-center gap-3">
+    <button
+      routerLink="/admin/projects"
+      type="button"
+      class="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all"
+    >
+      <i class="pi pi-arrow-left text-xs"></i>
+    </button>
+    <div>
+      <p
+        class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-900"
+      >
+        Project Management
+      </p>
+      <h1 class="text-base font-extrabold text-slate-900 leading-tight">
+        {{ isEditMode ? "Edit Project" : "Create New Project" }}
+      </h1>
+    </div>
+  </div>
+
+  <!-- Header action buttons -->
+  <div class="flex items-center gap-3">
+    <button
+      routerLink="/admin/projects"
+      type="button"
+      class="px-4 py-2 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-100 transition-all active:scale-95"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="submitting"
+      class="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-bold text-white bg-indigo-900 shadow-md shadow-indigo-900/20 hover:bg-indigo-800 hover:shadow-lg transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+    >
+      <ng-container *ngIf="submitting; else saveLabelHeader">
+        <div
+          class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"
+        ></div>
+        Saving...
+      </ng-container>
+      <ng-template #saveLabelHeader>
+        <i class="pi pi-save text-xs"></i>
+        {{ isEditMode ? "Update Project" : "Save Project" }}
+      </ng-template>
+    </button>
+  </div>
+</header>
+
+<!-- ── Page Body ──────────────────────────────────────────── -->
+<div class="p-8 max-w-6xl mx-auto w-full">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-12 gap-8">
+      <!-- ════════════════════════════════════════════════════ -->
+      <!-- LEFT COLUMN — Main Info                             -->
+      <!-- ════════════════════════════════════════════════════ -->
+      <div class="col-span-12 lg:col-span-8 space-y-6">
+        <!-- ── Project Identification ── -->
+        <div
+          class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-5"
+        >
+          <div class="flex items-center gap-2.5 pb-1">
+            <div
+              class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0"
+            >
+              <i class="pi pi-info-circle text-indigo-900 text-sm"></i>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-900">
+              Project Identification
+            </h3>
+          </div>
+
+          <!-- Title -->
+          <div class="space-y-1.5">
+            <label
+              class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+            >
+              Project Title <span class="text-red-500">*</span>
+            </label>
+            <input
+              formControlName="title"
+              type="text"
+              placeholder="e.g., Arun Valley Hydropower Project"
+              class="w-full h-11 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-indigo-900/30 text-slate-900 font-medium px-4 placeholder:text-slate-300 text-sm"
+              [class.ring-2]="isInvalid('title')"
+              [class.ring-red-300]="isInvalid('title')"
+            />
+            <p
+              *ngIf="isInvalid('title')"
+              class="text-[10px] text-red-500 font-medium"
+            >
+              Project title is required
+            </p>
+          </div>
+
+          <!-- Category Tags -->
+          <div class="space-y-1.5">
+            <label
+              class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+              >Category / Tags</label
+            >
+            <input
+              formControlName="categoryTags"
+              type="text"
+              placeholder="e.g., Hydropower, Tunnel, Infrastructure"
+              class="w-full h-11 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-indigo-900/30 text-slate-900 font-medium px-4 placeholder:text-slate-300 text-sm"
+            />
+            <p class="text-[10px] text-slate-400">
+              Separate multiple tags with commas
+            </p>
+          </div>
+
+          <!-- Province + Location -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+              >
+                Province <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <select
+                  formControlName="province"
+                  class="w-full h-11 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-indigo-900/30 text-slate-900 font-medium px-4 appearance-none text-sm"
+                  [class.ring-2]="isInvalid('province')"
+                  [class.ring-red-300]="isInvalid('province')"
+                >
+                  <option value="">Select Province</option>
+                  <option *ngFor="let p of provinces" [value]="p.value">
+                    {{ p.label }}
+                  </option>
+                </select>
+                <i
+                  class="pi pi-angle-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"
+                ></i>
+              </div>
+              <p
+                *ngIf="isInvalid('province')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Province is required
+              </p>
+            </div>
+
+            <div class="space-y-1.5">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+              >
+                Location <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <i
+                  class="pi pi-map-marker absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"
+                ></i>
+                <input
+                  formControlName="location"
+                  type="text"
+                  placeholder="e.g., Sankhuwasabha"
+                  class="w-full h-11 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-indigo-900/30 text-slate-900 font-medium pl-9 pr-4 placeholder:text-slate-300 text-sm"
+                  [class.ring-2]="isInvalid('location')"
+                  [class.ring-red-300]="isInvalid('location')"
+                />
+              </div>
+              <p
+                *ngIf="isInvalid('location')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Location is required
+              </p>
+            </div>
+          </div>
+
+          <!-- Client + Status -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+              >
+                Client Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                formControlName="clientName"
+                type="text"
+                placeholder="e.g., Nepal Electricity Authority"
+                class="w-full h-11 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-indigo-900/30 text-slate-900 font-medium px-4 placeholder:text-slate-300 text-sm"
+                [class.ring-2]="isInvalid('clientName')"
+                [class.ring-red-300]="isInvalid('clientName')"
+              />
+              <p
+                *ngIf="isInvalid('clientName')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Client name is required
+              </p>
+            </div>
+
+            <div class="space-y-1.5">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500"
+              >
+                Project Status <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <select
+                  formControlName="status"
+                  class="w-full h-11 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-indigo-900/30 text-slate-900 font-medium px-4 appearance-none text-sm"
+                  [class.ring-2]="isInvalid('status')"
+                  [class.ring-red-300]="isInvalid('status')"
+                >
+                  <option value="">Select Status</option>
+                  <option value="ONGOING">Ongoing</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="PENDING">Pending</option>
+                </select>
+                <i
+                  class="pi pi-angle-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"
+                ></i>
+              </div>
+              <p
+                *ngIf="isInvalid('status')"
+                class="text-[10px] text-red-500 font-medium"
+              >
+                Status is required
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Scope of Work ── -->
+        <div
+          class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div
+                class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0"
+              >
+                <i class="pi pi-list text-indigo-900 text-sm"></i>
+              </div>
+              <h3 class="text-base font-extrabold text-slate-900">
+                Scope of Work
+              </h3>
+            </div>
+            <span
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+            >
+              {{ scopeItems.length }} task{{
+                scopeItems.length !== 1 ? "s" : ""
+              }}
+            </span>
+          </div>
+
+          <!-- Scope items -->
+          <div class="space-y-2">
+            <div
+              *ngFor="let item of scopeItems; let i = index"
+              class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl group hover:bg-indigo-900/5 transition-colors"
+            >
+              <!-- Index badge -->
+              <span
+                class="w-6 h-6 rounded-full bg-indigo-900/10 text-indigo-900 text-[10px] font-black flex items-center justify-center shrink-0"
+              >
+                {{ i + 1 }}
+              </span>
+
+              <!-- Editable task input -->
+              <input
+                type="text"
+                [value]="item.value"
+                (input)="updateScopeItem(i, $event)"
+                placeholder="Describe this task..."
+                class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-slate-800 font-medium text-sm placeholder:text-slate-300"
+              />
+
+              <!-- Delete -->
+              <button
+                type="button"
+                (click)="removeScopeItem(i)"
+                class="opacity-0 group-hover:opacity-100 w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+              >
+                <i class="pi pi-times text-xs"></i>
+              </button>
+            </div>
+
+            <!-- Add task row -->
+            <button
+              type="button"
+              (click)="addScopeItem()"
+              class="w-full flex items-center gap-3 p-3 border-2 border-dashed border-slate-200 rounded-xl text-slate-400 hover:border-indigo-900/40 hover:text-indigo-900 hover:bg-indigo-900/5 transition-all group"
+            >
+              <span
+                class="w-6 h-6 rounded-full border-2 border-dashed border-slate-300 group-hover:border-indigo-900/40 flex items-center justify-center shrink-0"
+              >
+                <i class="pi pi-plus text-[10px]"></i>
+              </span>
+              <span class="text-sm font-bold">Add Task</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Description ── -->
+        <div
+          class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4"
+        >
+          <div class="flex items-center gap-2.5">
+            <div
+              class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0"
+            >
+              <i class="pi pi-align-left text-indigo-900 text-sm"></i>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-900">
+              Project Description
+            </h3>
+          </div>
+          <textarea
+            formControlName="description"
+            rows="5"
+            placeholder="Describe the project objectives, methodology, and key deliverables..."
+            class="w-full bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-900/30 text-slate-800 font-medium px-4 py-3 placeholder:text-slate-300 text-sm resize-none"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════ -->
+      <!-- RIGHT COLUMN — Gallery & Side Info                  -->
+      <!-- ════════════════════════════════════════════════════ -->
+      <div class="col-span-12 lg:col-span-4 space-y-6">
+        <!-- ── Project Gallery ── -->
+        <div
+          class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4"
+        >
+          <div class="flex items-center gap-2.5">
+            <div
+              class="w-8 h-8 rounded-lg bg-indigo-900/10 flex items-center justify-center shrink-0"
+            >
+              <i class="pi pi-images text-indigo-900 text-sm"></i>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-900">
+              Project Gallery
+            </h3>
+          </div>
+
+          <!-- Main upload zone -->
+          <div
+            class="aspect-video w-full border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center bg-slate-50 hover:bg-indigo-900/5 hover:border-indigo-900/30 transition-all cursor-pointer group relative overflow-hidden"
+            (click)="mainImageInput.click()"
+          >
+            <!-- Existing / preview image -->
+            <ng-container *ngIf="imagePreviews.length > 0; else uploadZone">
+              <img
+                [src]="imagePreviews[0]"
+                alt="Main preview"
+                class="w-full h-full object-cover absolute inset-0 rounded-xl"
+              />
+              <div
+                class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-xl"
+              >
+                <p class="text-white text-xs font-bold">Change Main Image</p>
+              </div>
+            </ng-container>
+
+            <ng-template #uploadZone>
+              <i
+                class="pi pi-cloud-upload text-3xl text-slate-300 mb-2 group-hover:text-indigo-900/40 transition-colors"
+              ></i>
+              <p
+                class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+              >
+                Upload Images
+              </p>
+              <p class="text-[9px] text-slate-400 mt-0.5">
+                PNG, JPG — Max 10MB each
+              </p>
+            </ng-template>
+
+            <input
+              #mainImageInput
+              type="file"
+              accept="image/*"
+              multiple
+              class="hidden"
+              (change)="onImagesSelected($event)"
+            />
+          </div>
+
+          <!-- Thumbnail grid -->
+          <ng-container *ngIf="uploadedImageIds.length === 0; else existingImages">
+            <!-- 🔹 NEW PREVIEW IMAGES -->
+            <div class="grid grid-cols-3 gap-2">
+              <div
+                *ngFor="let preview of imagePreviews; let i = index"
+                class="aspect-square rounded-lg overflow-hidden relative group cursor-pointer"
+              >
+                <img [src]="preview" class="w-full h-full object-cover" />
+
+                <div
+                  class="absolute inset-0 bg-indigo-900/50 opacity-0 group-hover:opacity-100 flex items-center justify-center"
+                >
+                  <button
+                    type="button"
+                    (click)="$event.stopPropagation(); removeImage(i)"
+                    class="w-6 h-6 bg-white/20 hover:bg-red-500 rounded-full flex items-center justify-center"
+                  >
+                    <i class="pi pi-times text-white text-[10px]"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Add more -->
+              <div
+                class="aspect-square border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer"
+                (click)="mainImageInput.click()"
+              >
+                <i class="pi pi-plus text-slate-300 text-sm"></i>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- 🔹 EXISTING IMAGES (EDIT MODE) -->
+          <ng-template #existingImages>
+            <ng-container *ngIf="uploadedImageIds.length > 0; else emptyState">
+              <div class="grid grid-cols-3 gap-2">
+                <div
+                  *ngFor="let imageId of uploadedImageIds; let i = index"
+                  class="aspect-square rounded-lg overflow-hidden relative group cursor-pointer"
+                >
+                  <img
+                    [secureImage]="imageId"
+                    class="w-full h-full object-cover"
+                  />
+
+                  <div
+                    class="absolute inset-0 bg-indigo-900/50 opacity-0 group-hover:opacity-100 flex items-center justify-center"
+                  >
+                    <button
+                      type="button"
+                      (click)="$event.stopPropagation(); removeImage(i)"
+                      class="w-6 h-6 bg-white/20 hover:bg-red-500 rounded-full flex items-center justify-center"
+                    >
+                      <i class="pi pi-times text-white text-[10px]"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Add more -->
+                <div
+                  class="aspect-square border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer"
+                  (click)="mainImageInput.click()"
+                >
+                  <i class="pi pi-plus text-slate-300 text-sm"></i>
+                </div>
+              </div>
+            </ng-container>
+          </ng-template>
+
+          <!-- 🔹 EMPTY STATE -->
+          <ng-template #emptyState>
+            <div class="text-center text-slate-400 text-sm py-4">
+              No images uploaded
+            </div>
+          </ng-template>
+
+          <!-- Upload progress indicator -->
+          <div
+            *ngIf="uploadingImages"
+            class="flex items-center gap-2 text-xs text-indigo-900 font-medium"
+          >
+            <div
+              class="w-3.5 h-3.5 border-2 border-indigo-900 border-t-transparent rounded-full animate-spin"
+            ></div>
+            Uploading images...
+          </div>
+        </div>
+
+        <!-- ── Project Summary Preview ── -->
+        <div
+          class="bg-linear-to-br from-indigo-900 to-indigo-950 rounded-2xl p-6 text-white space-y-4"
+        >
+          <h3
+            class="text-xs font-bold uppercase tracking-widest text-indigo-300"
+          >
+            Preview Summary
+          </h3>
+
+          <div class="space-y-3">
+            <div>
+              <p class="text-white font-bold text-sm leading-snug">
+                {{
+                  form.get("title")?.value || "Project title will appear here"
+                }}
+              </p>
+              <p class="text-indigo-300 text-xs mt-0.5">
+                {{ form.get("clientName")?.value || "Client name" }}
+              </p>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5">
+              <span
+                *ngIf="form.get('province')?.value"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 text-white text-[10px] font-bold"
+              >
+                <i class="pi pi-map-marker text-[9px]"></i>
+                {{ form.get("province")?.value }},
+                {{ form.get("location")?.value }}
+              </span>
+              <span
+                *ngIf="form.get('status')?.value"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold"
+                [ngClass]="{
+                  'bg-blue-400/20 text-blue-200':
+                    form.get('status')?.value === 'ONGOING',
+                  'bg-green-400/20 text-green-200':
+                    form.get('status')?.value === 'COMPLETED',
+                  'bg-amber-400/20 text-amber-200':
+                    form.get('status')?.value === 'PENDING',
+                }"
+              >
+                <span
+                  class="w-1.5 h-1.5 rounded-full"
+                  [ngClass]="{
+                    'bg-blue-400': form.get('status')?.value === 'ONGOING',
+                    'bg-green-400': form.get('status')?.value === 'COMPLETED',
+                    'bg-amber-400': form.get('status')?.value === 'PENDING',
+                  }"
+                ></span>
+                {{ form.get("status")?.value }}
+              </span>
+            </div>
+
+            <div
+              *ngIf="scopeItems.length > 0"
+              class="border-t border-white/10 pt-3 space-y-1"
+            >
+              <p
+                class="text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-2"
+              >
+                Scope
+              </p>
+              <div
+                *ngFor="let item of scopeItems.slice(0, 3); let i = index"
+                class="flex items-start gap-2"
+              >
+                <span
+                  class="w-1 h-1 rounded-full bg-indigo-400 mt-1.5 shrink-0"
+                ></span>
+                <p class="text-xs text-indigo-100 leading-relaxed">
+                  {{ item.value }}
+                </p>
+              </div>
+              <p
+                *ngIf="scopeItems.length > 3"
+                class="text-[10px] text-indigo-400 pl-3"
+              >
+                +{{ scopeItems.length - 3 }} more tasks
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Error Banner ── -->
+    <div
+      *ngIf="submitError"
+      class="mt-6 flex items-center gap-3 px-4 py-3 bg-red-50 rounded-xl border border-red-100"
+    >
+      <i class="pi pi-exclamation-triangle text-red-500 shrink-0"></i>
+      <p class="text-xs font-medium text-red-600">{{ submitError }}</p>
+    </div>
+
+    <!-- ── Footer Actions ── -->
+    <div
+      class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between"
+    >
+      <p class="text-xs text-slate-400">
+        <span class="text-red-400">*</span> Required fields
+      </p>
+      <div class="flex gap-3">
+        <button
+          routerLink="/admin/projects"
+          type="button"
+          class="px-6 py-2.5 rounded-xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all active:scale-95"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="submitting"
+          class="flex items-center gap-2 px-8 py-2.5 rounded-xl font-bold text-sm text-white bg-indigo-900 shadow-lg shadow-indigo-900/20 hover:bg-indigo-800 hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
+        >
+          <ng-container *ngIf="submitting; else saveLabel">
+            <div
+              class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+            ></div>
+            Saving...
+          </ng-container>
+          <ng-template #saveLabel>
+            <i class="pi pi-save text-sm"></i>
+            {{ isEditMode ? "Update Project" : "Save Project" }}
+          </ng-template>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

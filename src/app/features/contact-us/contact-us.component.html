@@ -1,0 +1,79 @@
+<section >
+  <div class="hero-section">
+    <div class="relative w-full h-[35vh] flex items-center justify-center">
+      <div
+        class="absolute inset-0 bg-cover bg-center filter bg-no-repeat blur-none"
+        [style.backgroundImage]="'url(' + slide.image + ')'"
+        [attr.data-alt]="slide.alt"
+      ></div>
+      <div class="absolute inset-0 bg-black/20 z-10"></div>
+      <div class="relative z-20 w-full">
+        <div class="content pl-10 max-w-xl">
+          <h1
+            data-aos="fade-right"
+            data-delay="200"
+            class="font-semibold text-2xl md:text-3xl font-800 text-white mb-6 max-w-xs md:max-w-xl lg:max-w-2xl"
+          >
+            {{ slide.title }}<br />
+          </h1>
+          <p 
+           data-aos="fade-right"
+            data-delay="200"
+          class=" text-white">{{ slide.highlight }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="contact-us-form py-8 md:py-16">
+    <div class="grid md:grid-cols-3 justify-center items-baseline gap-2 md:gap-8 px-4 md:px-12">
+      <div class="information md:col-span-2 flex flex-col gap-8">
+        <div>
+          <span class="text-3xl md:text-6xl font-bold text-slate-800"> Contact
+            <br>
+            Information </span>
+        </div>
+        <p class="max-w-xs text-justify text-slate-800">
+            Thank you for visiting our website. We are here to assist you with any inquiries you may have.
+        </p>
+        <div class="details flex flex-col md:flex-row gap-4">
+            <div class="content1 md:w-1/2 flex items-center gap-4 px-4 py-6 rounded-xl border border-gray-400/40 shadow-md shadow-green-400">
+                <div class="bg-green-500 size-10 rounded-full text-white flex justify-center items-center">
+                    <i class="fa-regular fa-clock text-2xl"></i>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <span class=" font-bold">Working Schedule:</span>
+                    <span>Day: {{ siteSettingResponse().workingHours?.days}} </span>
+                    <span>Time: {{ siteSettingResponse().workingHours?.openTime}} to {{ siteSettingResponse().workingHours?.closeTime }}</span>
+                </div>
+            </div>
+            <div class="content1 md:w-1/2 flex items-center gap-4 px-4 py-6 rounded-xl border border-gray-400/40 shadow-md shadow-green-400">
+                <div class="bg-green-500 size-10 rounded-full text-white flex justify-center items-center">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="address flex flex-col">
+                    <span class="font-black ">
+                       Office Address:
+                    </span>
+                    <span class="max-w-7xl">
+                       {{ siteSettingResponse().address }}
+                    </span>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <app-query-page [buttonType]="'reset all'"/>
+      </div>
+    </div>
+  </div>
+  <div class="map-section container mx-auto rounded-2xl broder border-slate-500/40 shadow-xl shadow-green-500 mt-4 mb-12">
+    <iframe
+  width="100%"
+  height="450"
+  style="border:0;"
+  loading="lazy"
+  allowfullscreen
+  [src]="mapAddress">
+</iframe>
+  </div>
+</section>

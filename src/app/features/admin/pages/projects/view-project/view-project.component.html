@@ -1,0 +1,116 @@
+<div *ngIf="!loading && project as p" class="max-w-6xl mx-auto p-6 space-y-6">
+
+  <!-- 🔷 Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-extrabold text-slate-900">
+        {{ p.title }}
+      </h1>
+      <p class="text-sm text-slate-500 mt-1">
+        {{ p.clientName }}
+      </p>
+    </div>
+
+    <span
+      class="px-3 py-1 rounded-full text-xs font-bold"
+      [ngClass]="getStatusClass(p.status)"
+    >
+      {{ p.status }}
+    </span>
+  </div>
+
+  <!-- 🖼️ MAIN IMAGE -->
+  <div *ngIf="p.imageIds.length > 0; else noImage">
+
+    <img
+      *ngFor="let imageId of p.imageIds"
+      [secureImage]="imageId"
+      class="w-full h-87 object-cover rounded-2xl shadow-md mb-3"
+    />
+
+  </div>
+
+  <!-- ❌ No Image -->
+  <ng-template #noImage>
+    <div class="w-full h-50 flex items-center justify-center bg-slate-100 rounded-2xl text-slate-400 text-sm">
+      No Image Available
+    </div>
+  </ng-template>
+
+  <!-- 📍 INFO -->
+  <div class="flex flex-wrap gap-3 text-sm">
+
+    <span class="px-3 py-1 bg-slate-100 rounded-full font-medium">
+      📍 {{ p.province }}, {{ p.location }}
+    </span>
+
+    <span
+      *ngIf="p.categoryTags"
+      class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-medium"
+    >
+      {{ p.categoryTags }}
+    </span>
+
+    <span class="px-3 py-1 bg-slate-100 rounded-full font-medium">
+      🕒 Created: {{ p.createdAt | date:'mediumDate' }}
+    </span>
+
+    <span
+      *ngIf="p.updatedAt"
+      class="px-3 py-1 bg-slate-100 rounded-full font-medium"
+    >
+      🔄 Updated: {{ p.updatedAt | date:'mediumDate' }}
+    </span>
+
+  </div>
+
+  <!-- 📝 DESCRIPTION -->
+  <div class="bg-white p-5 rounded-2xl shadow-sm border">
+    <h3 class="font-bold text-slate-900 mb-2">Description</h3>
+    <p class="text-sm text-slate-600 leading-relaxed">
+      {{ p.description || 'No description provided.' }}
+    </p>
+  </div>
+
+  <!-- 📋 SCOPE OF WORK -->
+  <div class="bg-white p-5 rounded-2xl shadow-sm border">
+    <h3 class="font-bold text-slate-900 mb-3">Scope of Work</h3>
+
+    <ul *ngIf="p.scopeOfWork.length > 0; else noScope" class="space-y-2">
+      <li
+        *ngFor="let item of p.scopeOfWork"
+        class="flex items-start gap-2 text-sm text-slate-700"
+      >
+        <span class="w-2 h-2 mt-2 bg-indigo-500 rounded-full"></span>
+        {{ item }}
+      </li>
+    </ul>
+
+    <ng-template #noScope>
+      <p class="text-sm text-slate-400">No scope defined.</p>
+    </ng-template>
+  </div>
+
+  <!-- 📦 SUMMARY -->
+  <div class="bg-indigo-900 text-white p-5 rounded-2xl space-y-2">
+
+    <p class="text-sm"><strong>Client:</strong> {{ p.clientName }}</p>
+    <p class="text-sm"><strong>Status:</strong> {{ p.status }}</p>
+    <p class="text-sm"><strong>Location:</strong> {{ p.location }}</p>
+    <p class="text-sm">
+      <strong>Total Images:</strong> {{ p.imageIds.length || 0 }}
+    </p>
+
+  </div>
+
+  <!-- 🔙 BACK -->
+  <div class="pt-4">
+    <button
+      routerLink="/admin/projects"
+      class="px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm font-bold"
+    >
+      ← Back to Projects
+    </button>
+  </div>
+
+</div>
