@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { GoogleMapsModule } from '@angular/google-maps';
 import { DialogService } from '../../services/project/dialog.service';
 import { DrawerModule } from 'primeng/drawer';
 import { ProjectComponent } from "./project/project.component";
@@ -21,7 +20,7 @@ export interface Tab {
 @Component({
   selector: 'app-projects',
   imports: [
-    GoogleMapsModule,
+   
     DrawerModule,
     CommonModule,
     ProjectComponent,
